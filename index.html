@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SurveyPay - Earn Daily Rewards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    
+    <style>
+        body {
+            background: radial-gradient(circle at top, #1a0b36 0%, #0b041a 70%, #05010d 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #ffffff;
+            user-select: none;
+        }
+        .cosmic-panel {
+            background: linear-gradient(135deg, rgba(30, 16, 68, 0.7) 0%, rgba(15, 7, 36, 0.9) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .neon-glow-blue { box-shadow: 0 0 15px rgba(0, 149, 255, 0.4); }
+        .neon-glow-green { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
+        .neon-glow-gold { box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); }
+        .nav-active {
+            background: linear-gradient(180deg, rgba(0, 149, 255, 0.2) 0%, rgba(0, 149, 255, 0) 100%);
+            border-top: 3px solid #0095ff;
+            color: #0095ff;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="max-w-md mx-auto min-h-screen flex flex-col justify-between overflow-x-hidden relative">
+
+    <header class="w-full cosmic-panel px-4 py-3 flex justify-between items-center sticky top-0 z-40 border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-inner">
+                <img id="userAvatar" src="https://i.imgur.com/8Q5N8wX.png" alt="Avatar" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Welcome Back!</p>
+                <h2 id="headerUserName" class="text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">Faith Mbatia</h2>
+            </div>
+        </div>
+        <button class="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition">
+            <i class="fa-solid fa-bell text-xl text-yellow-400"></i>
+            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+        </button>
+    </header>
+
+    <main class="flex-1 px-4 py-4 overflow-y-auto hide-scrollbar pb-24 w-full">
+
+        <section id="screen-home" class="app-screen space-y-4">
+            <div class="cosmic-panel p-5 rounded-2xl relative overflow-hidden border border-cyan-500/20 neon-glow-blue">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-sm text-gray-300 font-medium tracking-wide">Available Balance</p>
+                        <h1 class="text-4xl font-extrabold text-white tracking-tight mt-1" id="mainBalanceDisplay">KSh 36,862.50</h1>
+                        <p class="text-xs text-cyan-400 font-semibold mt-1" id="convertedUsdDisplay">($245.75 USD)</p>
+                    </div>
+                    <div class="bg-amber-400/10 border border-amber-400/30 text-amber-300 px-3 py-1.5 rounded-xl text-right">
+                        <p class="text-[10px] uppercase font-bold text-amber-400/80">Today's Profit</p>
+                        <p class="text-sm font-black">+KSh 2,775.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-blue-600/40 to-blue-900/60 border border-blue-400/30 text-white shadow-lg transform active:scale-95 transition">
+                    <i class="fa-solid fa-bolt text-2xl text-cyan-300"></i>
+                    <span>Quick Surveys</span>
+                </button>
+                <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-amber-600/40 to-amber-900/60 border border-amber-400/30 text-white shadow-lg transform active:scale-95 transition">
+                    <i class="fa-solid fa-crown text-2xl text-amber-300"></i>
+                    <span>High Paying</span>
+                </button>
+            </div>
+
+            <div>
+                <h3 class="text-base font-bold text-gray-200 mb-3 flex justify-between items-center">
+                    <span>Featured Surveys</span>
+                    <span class="text-xs text-cyan-400 cursor-pointer" onclick="switchTab('surveys')">View All</span>
+                </h3>
+                <div class="space-y-3">
+                    <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-cyan-500">
+                        <div>
+                            <h4 class="font-bold text-sm">Tech Trends Market Survey</h4>
+                            <p class="text-xs text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>10 Mins • 50 Questions</p>
+                            <p class="text-xs font-bold text-green-400 mt-1">Reward: KSh 750.00</p>
+                        </div>
+                        <button onclick="handleSurveyAccess('Tech Trends Survey', 750)" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-xs font-black px-4 py-2 rounded-lg shadow-md transform active:scale-95 transition">START</button>
+                    </div>
+
+                    <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-amber-500">
+                        <div>
+                            <h4 class="font-bold text-sm">Shopping Habits & E-Commerce</h4>
+                            <p class="text-xs text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>8 Mins • 35 Questions</p>
+                            <p class="text-xs font-bold text-green-400 mt-1">Reward: KSh 525.00</p>
+                        </div>
+                        <button onclick="handleSurveyAccess('Shopping Habits Survey', 525)" class="bg-gradient-to-r from-amber-500 to-orange-500 text-xs font-black px-4 py-2 rounded-lg shadow-md transform active:scale-95 transition">START</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cosmic-panel p-4 rounded-xl border border-purple-500/20">
+                <div class="flex justify-between text-xs font-bold mb-2">
+                    <span class="text-purple-300">Milestone Challenge</span>
+                    <span class="text-white">1 / 3 Completed</span>
+                </div>
+                <div class="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-1/3"></div>
+                </div>
+                <p class="text-[11px] text-gray-400 mt-2">Complete 2 more surveys today to unlock a <span class="text-yellow-400 font-bold">KSh 1,500.00</span> structural app bonus!</p>
+            </div>
+        </section>
+
+        <section id="screen-surveys" class="app-screen space-y-4 hidden">
+            <div id="activationGateBanner" class="bg-gradient-to-r from-red-900/40 to-amber-900/40 border border-amber-500/30 p-3 rounded-xl flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa-solid fa-lock text-amber-400 text-lg"></i>
+                    <p class="text-xs text-gray-200">Dashboard Locked. Pay <span class="text-amber-300 font-bold">KSh 180</span> to start tracking tasks.</p>
+                </div>
+                <button onclick="triggerPaystackActivation()" class="bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md hover:bg-amber-300 transition">ACTIVATE NOW</button>
+            </div>
+
+            <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
+                <span class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full font-bold whitespace-nowrap">All Surveys</span>
+                <span class="bg-white/5 text-gray-300 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">High Paying</span>
+                <span class="bg-white/5 text-gray-300 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">Quick Polls</span>
+            </div>
+
+            <div class="space-y-3" id="allSurveysContainer">
+                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border border-white/5 relative">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 text-lg"><i class="fa-solid fa-basket-shopping"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm">Product Feedback Survey</h4>
+                            <p class="text-xs text-gray-400">12 Mins • 200 slots remaining</p>
+                            <p class="text-xs text-green-400 font-bold mt-0.5">Earn KSh 750.00</p>
+                        </div>
+                    </div>
+                    <button onclick="handleSurveyAccess('Product Feedback Survey', 750)" class="bg-gradient-to-r from-green-500 to-emerald-600 text-xs font-bold px-4 py-2 rounded-lg">START</button>
+                </div>
+                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border border-white/5 relative">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 text-lg"><i class="fa-solid fa-plane"></i></div>
+                        <div>
+                            <h4 class="font-bold text-sm">Travel Habits Evaluation</h4>
+                            <p class="text-xs text-gray-400">15 Mins • 150 slots remaining</p>
+                            <p class="text-xs text-green-400 font-bold mt-0.5">Earn KSh 675.00</p>
+                        </div>
+                    </div>
+                    <button onclick="handleSurveyAccess('Travel Habits Evaluation', 675)" class="bg-gradient-to-r from-orange-500 to-red-600 text-xs font-bold px-4 py-2 rounded-lg">START</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-rewards" class="app-screen space-y-4 hidden">
+            <div class="text-center py-2">
+                <h3 class="text-lg font-black tracking-tight">Global Top Earners</h3>
+                <p class="text-xs text-gray-400">Top Performers of the Week</p>
+            </div>
+
+            <div class="flex justify-center items-end gap-2 pt-6 pb-4 bg-white/5 rounded-2xl border border-white/5">
+                <div class="flex flex-col items-center w-24">
+                    <div class="w-12 h-12 rounded-full border-2 border-slate-300 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=32" alt="2nd"></div>
+                    <p class="text-xs font-bold mt-1 text-center truncate w-full">Sarah Miller</p>
+                    <span class="text-[11px] text-green-400 font-bold">KSh 147,075</span>
+                    <div class="w-20 bg-gradient-to-t from-slate-700 to-slate-500 h-16 rounded-t-lg mt-2 flex items-center justify-center font-black text-xl text-slate-200">2</div>
+                </div>
+                <div class="flex flex-col items-center w-28 scale-105 -translate-y-2">
+                    <i class="fa-solid fa-crown text-yellow-400 text-lg mb-1 animate-bounce"></i>
+                    <div class="w-14 h-14 rounded-full border-2 border-amber-400 overflow-hidden shadow-lg"><img src="https://i.pravatar.cc/150?img=11" alt="1st"></div>
+                    <p class="text-sm font-black mt-1 text-center truncate w-full">Alex Johnson</p>
+                    <span class="text-xs text-green-400 font-black">KSh 187,612</span>
+                    <div class="w-24 bg-gradient-to-t from-amber-600 to-amber-400 h-24 rounded-t-lg mt-2 flex items-center justify-center font-black text-2xl text-amber-900">1</div>
+                </div>
+                <div class="flex flex-col items-center w-24">
+                    <div class="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=60" alt="3rd"></div>
+                    <p class="text-xs font-bold mt-1 text-center truncate w-full">Mike Carter</p>
+                    <span class="text-[11px] text-green-400 font-bold">KSh 131,347</span>
+                    <div class="w-20 bg-gradient-to-t from-amber-900 to-amber-800 h-12 rounded-t-lg mt-2 flex items-center justify-center font-black text-lg text-amber-600">3</div>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <div class="cosmic-panel p-3 rounded-xl flex justify-between items-center border border-cyan-500/30 bg-cyan-950/20">
+                    <div class="flex items-center gap-3">
+                        <span class="font-black text-sm text-cyan-400">#8</span>
+                        <div class="w-8 h-8 rounded-full overflow-hidden border border-white/20"><img src="https://i.imgur.com/8Q5N8wX.png" class="w-full h-full object-cover"></div>
+                        <span class="font-bold text-sm text-white">Your Rank (Faith)</span>
+                    </div>
+                    <span class="font-black text-sm text-green-400">KSh 96,337.50</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-wallet" class="app-screen space-y-4 hidden">
+            <div class="cosmic-panel p-5 rounded-2xl border border-white/10 text-center">
+                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Withdrawable Balance</p>
+                <h2 class="text-4xl font-black text-white tracking-tight mt-1" id="withdrawalBalanceHeader">KSh 36,862.50</h2>
+                <p class="text-[11px] text-amber-400 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Minimum Threshold restriction applies: <strong>KSh 18,000.00</strong></p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Select Payout Gateway Method</label>
+                <div class="grid grid-cols-3 gap-2.5">
+                    <div onclick="selectWithdrawMethod('mpesa')" id="method-mpesa" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-green-500 cursor-pointer bg-green-950/10">
+                        <span class="text-emerald-400 font-black text-xs tracking-tighter">M-PESA</span>
+                        <span class="text-[9px] text-gray-400">Mobile Money</span>
+                    </div>
+                    <div onclick="selectWithdrawMethod('paypal')" id="method-paypal" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                        <i class="fa-brands fa-paypal text-xl text-blue-400"></i>
+                        <span class="text-[9px] text-gray-400">PayPal Express</span>
+                    </div>
+                    <div onclick="selectWithdrawMethod('bank')" id="method-bank" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                        <i class="fa-solid fa-building-columns text-xl text-purple-400"></i>
+                        <span class="text-[9px] text-gray-400">Bank Wire</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Withdrawal Amount (KES)</label>
+                    <input type="number" id="withdrawAmountInput" value="18000" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-lg font-black focus:outline-none focus:border-cyan-400 transition">
+                </div>
+                
+                <div class="bg-white/5 p-3 rounded-xl space-y-1.5 text-xs">
+                    <div class="flex justify-between text-gray-400"><span>Network Transfer Fee</span><span class="font-bold text-white">KSh 300.00</span></div>
+                    <div class="flex justify-between text-gray-400"><span>Estimated Processing Time</span><span class="font-bold text-cyan-400">Instant Execution</span></div>
+                </div>
+
+                <button onclick="executeWithdrawalRequest()" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-black tracking-wide text-sm shadow-lg text-white transform active:scale-95 transition mt-2 neon-glow-green">EXECUTE WITHDRAW NOW</button>
+            </div>
+        </section>
+
+        <section id="screen-more" class="app-screen space-y-4 hidden">
+            <div class="cosmic-panel p-4 rounded-xl flex items-center gap-4 border border-white/5">
+                <div class="w-14 h-14 rounded-full border-2 border-purple-500 overflow-hidden"><img src="https://i.imgur.com/8Q5N8wX.png" class="w-full h-full object-cover"></div>
+                <div>
+                    <h3 class="font-bold text-base" id="profileNameDisplay">Faith Mbatia</h3>
+                    <p class="text-xs text-gray-400">Registered Developer Account Account</p>
+                    <div class="inline-block bg-purple-500/20 text-purple-300 font-bold text-[10px] px-2 py-0.5 rounded-md mt-1">Tier 1 Contributor</div>
+                </div>
+            </div>
+
+            <div class="cosmic-panel rounded-xl overflow-hidden divide-y divide-white/5">
+                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-palette text-blue-400"></i><span class="text-sm font-medium">App Theme Variant</span></div>
+                    <span class="text-xs font-bold text-purple-400">Vibrant Dark</span>
+                </div>
+                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-green-400"></i><span class="text-sm font-medium">Two-Factor Authentication</span></div>
+                    <span class="text-xs font-black text-green-400">ENABLED</span>
+                </div>
+                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Support center ready. Open a ticket at support@surveyapp.com')">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-headset text-amber-400"></i><span class="text-sm font-medium">Help & Live Support Escalation</span></div>
+                    <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
+                </div>
+            </div>
+
+            <button onclick="alert('Session logging persistence reset active.')" class="w-full py-3.5 bg-red-600/20 border border-red-500/30 text-red-300 font-bold text-sm rounded-xl hover:bg-red-600/30 transition">Log Out Secure Session</button>
+        </section>
+
+    </main>
+
+    <nav class="max-w-md w-full bg-[#0d061f]/95 border-t border-white/10 grid grid-cols-5 fixed bottom-0 z-50 backdrop-blur-md pb-safe">
+        <button id="nav-home" onclick="switchTab('home')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition nav-active">
+            <i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button id="nav-surveys" onclick="switchTab('surveys')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+            <i class="fa-solid fa-square-poll-horizontal text-lg"></i><span class="text-[10px] font-bold">Surveys</span>
+        </button>
+        <button id="nav-rewards" onclick="switchTab('rewards')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+            <i class="fa-solid fa-trophy text-lg"></i><span class="text-[10px] font-bold">Rewards</span>
+        </button>
+        <button id="nav-wallet" onclick="switchTab('wallet')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+            <i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px] font-bold">Withdraw</span>
+        </button>
+        <button id="nav-more" onclick="switchTab('more')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+            <i class="fa-solid fa-bars text-lg"></i><span class="text-[10px] font-bold">More</span>
+        </button>
+    </nav>
+
+    <script>
+        // System Config State Values
+        let isActivated = false; 
+        let userBalanceKsh = 36862.50;
+        const exchangeRate = 150.00; // Mock conversion tracking rate tracking index values
+        let currentSelectedWithdrawMethod = 'mpesa';
+
+        // Public Live Key Target references matching user spec criteria strictly
+        const paystackPublicKey = 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc';
+
+        // Bootstrapping Initializer Run configurations
+        window.addEventListener('DOMContentLoaded', () => {
+            updateBalanceDisplays();
+            evaluateActivationStatusTheme();
+        });
+
+        // Tab Switching Router Management Core
+        function switchTab(targetScreen) {
+            document.querySelectorAll('.app-screen').forEach(screen => screen.classList.add('hidden'));
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active'));
+
+            document.getElementById(`screen-${targetScreen}`).classList.remove('hidden');
+            document.getElementById(`nav-${targetScreen}`).classList.add('nav-active');
+        }
+
+        // Live Dynamic State Sync calculations
+        function updateBalanceDisplays() {
+            document.getElementById('mainBalanceDisplay').innerText = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('withdrawalBalanceHeader').innerText = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            let usdEquiv = userBalanceKsh / exchangeRate;
+            document.getElementById('convertedUsdDisplay').innerText = `($${usdEquiv.toFixed(2)} USD)`;
+        }
+
+        function evaluateActivationStatusTheme() {
+            const gateBanner = document.getElementById('activationGateBanner');
+            if (isActivated) {
+                if(gateBanner) gateBanner.classList.add('hidden');
+            } else {
+                if(gateBanner) gateBanner.classList.remove('hidden');
+            }
+        }
+
+        // Processing Paystack Integration Gateway Interceptor Pipeline
+        function triggerPaystackActivation() {
+            let handler = PaystackPop.setup({
+                key: paystackPublicKey,
+                email: 'payments@surveyapp.com',
+                amount: 18000, // Amount input configured explicitly as subunits value integer matching 180.00 KES standard value parameters
+                currency: 'KES',
+                ref: 'SP-' + Math.floor((Math.random() * 1000000000) + 1), 
+                callback: function(response){
+                    alert('Payment Successful! Activation completed. Reference code ID token: ' + response.reference);
+                    isActivated = true;
+                    evaluateActivationStatusTheme();
+                    switchTab('surveys');
+                },
+                onClose: function(){
+                    alert('Activation transaction session cancelled prematurely.');
+                }
+            });
+            handler.openIframe();
+        }
+
+        // Guard Check Processing Actions Controls Access Rules implementation logic 
+        function handleSurveyAccess(surveyTitle, rewardAmount) {
+            if (!isActivated) {
+                alert('Access Denied. You must pay KSh 180 on Paybill 880100 to unlock the survey execution dashboard panel items modules.');
+                triggerPaystackActivation();
+                return;
+            }
+            
+            // Simulating survey tracking activity simulation workflow smoothly
+            if(confirm(`Do you wish to launch and start task metrics parameters for: "${surveyTitle}"?`)) {
+                alert('Simulating Task processing framework metrics parameterization run data structures...');
+                setTimeout(() => {
+                    userBalanceKsh += rewardAmount;
+                    updateBalanceDisplays();
+                    alert(`Congratulations! Survey completed correctly. KSh ${rewardAmount} credited directly into your active dashboard balance records structures output values.`);
+                }, 2000);
+            }
+        }
+
+        // Wallet Control Configurations Management rules execution handling procedures logic items
+        function selectWithdrawMethod(method) {
+            document.querySelectorAll('[id^="method-"]').forEach(el => {
+                el.classList.remove('border-green-500', 'bg-green-950/10');
+                el.classList.add('border-transparent', 'opacity-50');
+            });
+            
+            const targetEl = document.getElementById(`method-${method}`);
+            targetEl.classList.remove('border-transparent', 'opacity-50');
+            targetEl.classList.add('border-green-500', 'bg-green-950/10');
+            currentSelectedWithdrawMethod = method;
+        }
+
+        function executeWithdrawalRequest() {
+            const requestedAmount = parseFloat(document.getElementById('withdrawAmountInput').value);
+            
+            if (requestedAmount < 18000) {
+                alert('Withdrawal Rejected. Regional infrastructure localized validation processing parameters enforce a minimal baseline value metric of exactly KSh 18,000.00 minimum value actions constraints check requirements parameters metrics.');
+                return;
+            }
+            
+            if (requestedAmount > userBalanceKsh) {
+                alert('Insufficient available ledger balance resources framework assets processing execution capability elements rules constraints metrics check bounds requirements validation failed.');
+                return;
+            }
+
+            userBalanceKsh -= requestedAmount;
+            updateBalanceDisplays();
+            alert(`Payout Transaction Authorized successfully via targeted gateway endpoint setup channel: [${currentSelectedWithdrawMethod.toUpperCase()}]. Funds processing batch deployment scheduled instantly running executing successfully.`);
+        }
+    </script>
+</body>
+</html>
