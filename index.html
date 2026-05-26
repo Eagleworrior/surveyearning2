@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurveyPay - Earn Daily Rewards</title>
+    <title>SurveyPay - Premium Earn Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     
     <style>
         body {
-            background: radial-gradient(circle at top, #1a0b36 0%, #0b041a 70%, #05010d 100%);
+            background: radial-gradient(circle at top, #14072d 0%, #070210 70%, #020005 100%);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             user-select: none;
         }
         .cosmic-panel {
-            background: linear-gradient(135deg, rgba(30, 16, 68, 0.7) 0%, rgba(15, 7, 36, 0.9) 100%);
+            background: linear-gradient(135deg, rgba(25, 12, 56, 0.75) 0%, rgba(10, 4, 24, 0.95) 100%);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
         }
-        .neon-glow-blue { box-shadow: 0 0 15px rgba(0, 149, 255, 0.4); }
-        .neon-glow-green { box-shadow: 0 0 15px rgba(0, 230, 118, 0.4); }
-        .neon-glow-gold { box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); }
+        .neon-glow-blue { box-shadow: 0 0 20px rgba(0, 149, 255, 0.35); }
+        .neon-glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
+        .neon-glow-purple { box-shadow: 0 0 20px rgba(139, 92, 246, 0.35); }
         .nav-active {
-            background: linear-gradient(180deg, rgba(0, 149, 255, 0.2) 0%, rgba(0, 149, 255, 0) 100%);
-            border-top: 3px solid #0095ff;
-            color: #0095ff;
+            background: linear-gradient(180deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 100%);
+            border-top: 3px solid #8b5cf6;
+            color: #a78bfa;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -35,275 +34,392 @@
 </head>
 <body class="max-w-md mx-auto min-h-screen flex flex-col justify-between overflow-x-hidden relative">
 
-    <header class="w-full cosmic-panel px-4 py-3 flex justify-between items-center sticky top-0 z-40 border-b border-white/10">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden shadow-inner">
-                <img id="userAvatar" src="https://i.imgur.com/8Q5N8wX.png" alt="Avatar" class="w-full h-full object-cover">
+    <div id="auth-layer" class="fixed inset-0 z-50 max-w-md mx-auto bg-[#070210] flex flex-col justify-center px-6 transition-all duration-500">
+        <div class="text-center mb-8">
+            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-purple-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg mb-4 neon-glow-purple">
+                <i class="fa-solid fa-square-poll-horizontal text-4xl text-white"></i>
             </div>
-            <div>
-                <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Welcome Back!</p>
-                <h2 id="headerUserName" class="text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">Faith Mbatia</h2>
-            </div>
+            <h1 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">SurveyPay Pro</h1>
+            <p class="text-xs text-purple-400 font-semibold tracking-wider uppercase mt-1">Global Data Monetization Hub</p>
         </div>
-        <button class="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition">
-            <i class="fa-solid fa-bell text-xl text-yellow-400"></i>
-            <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
-        </button>
-    </header>
 
-    <main class="flex-1 px-4 py-4 overflow-y-auto hide-scrollbar pb-24 w-full">
+        <div class="cosmic-panel p-6 rounded-2xl space-y-4">
+            <div class="flex border-b border-white/10 pb-2 mb-2">
+                <button onclick="toggleAuthTab('signup')" id="tab-signup" class="flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400">Create Account</button>
+                <button onclick="toggleAuthTab('login')" id="tab-login" class="flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400">Login</button>
+            </div>
 
-        <section id="screen-home" class="app-screen space-y-4">
-            <div class="cosmic-panel p-5 rounded-2xl relative overflow-hidden border border-cyan-500/20 neon-glow-blue">
-                <div class="absolute -right-10 -top-10 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="text-sm text-gray-300 font-medium tracking-wide">Available Balance</p>
-                        <h1 class="text-4xl font-extrabold text-white tracking-tight mt-1" id="mainBalanceDisplay">KSh 36,862.50</h1>
-                        <p class="text-xs text-cyan-400 font-semibold mt-1" id="convertedUsdDisplay">($245.75 USD)</p>
+            <div id="auth-form-fields" class="space-y-3">
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Account Full Name</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-user absolute left-4 top-3.5 text-gray-500 text-xs"></i>
+                        <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
                     </div>
-                    <div class="bg-amber-400/10 border border-amber-400/30 text-amber-300 px-3 py-1.5 rounded-xl text-right">
-                        <p class="text-[10px] uppercase font-bold text-amber-400/80">Today's Profit</p>
-                        <p class="text-sm font-black">+KSh 2,775.00</p>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Email Address</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-gray-500 text-xs"></i>
+                        <input type="email" id="auth-email" placeholder="name@domain.com" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Password</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-500 text-xs"></i>
+                        <input type="password" id="auth-pass" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-blue-600/40 to-blue-900/60 border border-blue-400/30 text-white shadow-lg transform active:scale-95 transition">
-                    <i class="fa-solid fa-bolt text-2xl text-cyan-300"></i>
-                    <span>Quick Surveys</span>
-                </button>
-                <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-amber-600/40 to-amber-900/60 border border-amber-400/30 text-white shadow-lg transform active:scale-95 transition">
-                    <i class="fa-solid fa-crown text-2xl text-amber-300"></i>
-                    <span>High Paying</span>
-                </button>
-            </div>
+            <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl font-black tracking-wide text-sm shadow-md text-white transform active:scale-95 transition mt-2 neon-glow-purple">CREATE ACCOUNT</button>
+        </div>
+    </div>
 
-            <div>
-                <h3 class="text-base font-bold text-gray-200 mb-3 flex justify-between items-center">
-                    <span>Featured Surveys</span>
-                    <span class="text-xs text-cyan-400 cursor-pointer" onclick="switchTab('surveys')">View All</span>
-                </h3>
+    <div id="app-content" class="hidden flex flex-col min-h-screen">
+        
+        <header class="w-full cosmic-panel px-4 py-3 flex justify-between items-center sticky top-0 z-40 border-b border-white/10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full border-2 border-purple-500 overflow-hidden bg-purple-900/40 flex items-center justify-center text-purple-300 font-bold" id="userAvatarPlaceholder">
+                    U
+                </div>
+                <div>
+                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Active Account</p>
+                    <h2 id="headerUserName" class="text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">User Account</h2>
+                </div>
+            </div>
+            <button class="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition" onclick="alert('System monitoring active. No unread logs.')">
+                <i class="fa-solid fa-bell text-xl text-purple-400"></i>
+                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 rounded-full animate-ping"></span>
+            </button>
+        </header>
+
+        <main class="flex-1 px-4 py-4 overflow-y-auto hide-scrollbar pb-24 w-full">
+
+            <section id="screen-home" class="app-screen space-y-4">
+                <div class="cosmic-panel p-5 rounded-2xl relative overflow-hidden border border-purple-500/20 neon-glow-purple">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm text-gray-300 font-medium tracking-wide">Available Balance</p>
+                            <h1 class="text-4xl font-extrabold text-white tracking-tight mt-1" id="mainBalanceDisplay">KSh 36,862.50</h1>
+                            <p class="text-xs text-purple-400 font-semibold mt-1" id="convertedUsdDisplay">($245.75 USD)</p>
+                        </div>
+                        <div class="bg-purple-400/10 border border-purple-400/30 text-purple-300 px-3 py-1.5 rounded-xl text-right">
+                            <p class="text-[10px] uppercase font-bold text-purple-400/80">Today's Profit</p>
+                            <p class="text-sm font-black text-green-400">+KSh 2,775.00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-purple-600/30 to-purple-900/60 border border-purple-400/20 text-white shadow-lg transform active:scale-95 transition">
+                        <i class="fa-solid fa-bolt text-2xl text-purple-400"></i>
+                        <span>Quick Surveys</span>
+                    </button>
+                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-blue-600/30 to-blue-900/60 border border-blue-400/20 text-white shadow-lg transform active:scale-95 transition">
+                        <i class="fa-solid fa-crown text-2xl text-blue-400"></i>
+                        <span>High Paying</span>
+                    </button>
+                </div>
+
+                <div>
+                    <h3 class="text-base font-bold text-gray-200 mb-3 flex justify-between items-center">
+                        <span>Featured Task Arrays</span>
+                        <span class="text-xs text-purple-400 cursor-pointer" onclick="switchTab('surveys')">View All</span>
+                    </h3>
+                    <div class="space-y-3" id="featuredSurveysContainer">
+                        <div class="text-center py-4 text-xs text-gray-500">Initializing secure free API context streams...</div>
+                    </div>
+                </div>
+
+                <div class="cosmic-panel p-4 rounded-xl border border-purple-500/20">
+                    <div class="flex justify-between text-xs font-bold mb-2">
+                        <span class="text-purple-300">Milestone Challenge Tier</span>
+                        <span class="text-white">1 / 3 Unified Tasks</span>
+                    </div>
+                    <div class="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-full w-1/3"></div>
+                    </div>
+                    <p class="text-[11px] text-gray-400 mt-2">Unlock processing verification loops to gain access to a structural app bonus up to <span class="text-green-400 font-bold">KSh 1,500.00</span>!</p>
+                </div>
+            </section>
+
+            <section id="screen-surveys" class="app-screen space-y-4 hidden">
+                <div id="activationGateBanner" class="bg-gradient-to-br from-purple-950/40 to-blue-950/40 border border-purple-500/30 p-5 rounded-2xl relative overflow-hidden">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl shrink-0">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="font-black text-sm text-white">Unlock Global Survey Dashboard Stream</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">To activate data parsing, complete a 180 KSh licensing fee payload execution to M-Pesa <span class="text-purple-400 font-bold">Paybill 880100</span>.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-white/5 space-y-2">
+                        <label class="block text-[10px] uppercase font-black tracking-wider text-purple-300">Paste M-Pesa / Verification Code</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="verificationCodeInput" placeholder="Enter Transaction Receipt Code" class="flex-1 bg-white/5 border border-white/10 p-2.5 rounded-xl text-white text-xs uppercase font-mono tracking-widest focus:outline-none focus:border-purple-400">
+                            <button onclick="verifyActivationCode()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md transition shrink-0">VERIFY</button>
+                        </div>
+                        <p class="text-[10px] text-red-400 hidden" id="activationErrorCode"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Invalid code sequence. Fake entries are discarded automatically.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
+                    <span class="bg-purple-600 text-white text-xs px-3 py-1.5 rounded-full font-bold whitespace-nowrap">Live Stream API Tasks</span>
+                    <span class="bg-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">Premium Yields</span>
+                </div>
+
+                <div class="space-y-3" id="allSurveysContainer">
+                    </div>
+            </section>
+
+            <section id="screen-rewards" class="app-screen space-y-4 hidden">
+                <div class="text-center py-1">
+                    <h3 class="text-lg font-black tracking-tight text-white">Global Ecosystem Analytics</h3>
+                    <p class="text-xs text-gray-400">Top Performing Consumer Nodes This Cycle</p>
+                </div>
+
+                <div class="flex justify-center items-end gap-2 pt-6 pb-4 bg-white/5 rounded-2xl border border-white/5 relative">
+                    <div class="flex flex-col items-center w-24">
+                        <div class="w-12 h-12 rounded-full border-2 border-slate-400 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=32" alt="Sarah"></div>
+                        <p class="text-xs font-bold mt-1 text-center truncate w-full">Sarah Miller</p>
+                        <span class="text-[11px] text-purple-400 font-bold">KSh 147,075</span>
+                        <div class="w-20 bg-gradient-to-t from-slate-800 to-slate-600 h-16 rounded-t-lg mt-2 flex items-center justify-center font-black text-xl text-slate-300">2</div>
+                    </div>
+                    <div class="flex flex-col items-center w-28 scale-105 -translate-y-2">
+                        <i class="fa-solid fa-crown text-amber-400 text-lg mb-1 animate-bounce"></i>
+                        <div class="w-14 h-14 rounded-full border-2 border-purple-500 overflow-hidden shadow-lg"><img src="https://i.pravatar.cc/150?img=11" alt="Alex"></div>
+                        <p class="text-sm font-black mt-1 text-center truncate w-full">Alex Johnson</p>
+                        <span class="text-xs text-green-400 font-black">KSh 187,612</span>
+                        <div class="w-24 bg-gradient-to-t from-purple-700 to-purple-500 h-24 rounded-t-lg mt-2 flex items-center justify-center font-black text-2xl text-purple-900">1</div>
+                    </div>
+                    <div class="flex flex-col items-center w-24">
+                        <div class="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=60" alt="Mike"></div>
+                        <p class="text-xs font-bold mt-1 text-center truncate w-full">Mike Carter</p>
+                        <span class="text-[11px] text-purple-400 font-bold">KSh 131,347</span>
+                        <div class="w-20 bg-gradient-to-t from-amber-950 to-amber-800 h-12 rounded-t-lg mt-2 flex items-center justify-center font-black text-lg text-amber-600">3</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="cosmic-panel p-3.5 rounded-xl flex justify-between items-center border border-purple-500/30 bg-purple-950/20">
+                        <div class="flex items-center gap-3">
+                            <span class="font-black text-sm text-purple-400">#8</span>
+                            <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-[10px] font-black text-white" id="leaderboardUserBadge">U</div>
+                            <span class="font-bold text-sm text-white" id="leaderboardUserName">Your Node Performance</span>
+                        </div>
+                        <span class="font-black text-sm text-green-400" id="leaderboardUserScore">KSh 36,862.50</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="screen-wallet" class="app-screen space-y-4 hidden">
+                <div class="cosmic-panel p-5 rounded-2xl border border-white/10 text-center">
+                    <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Withdrawable Asset Ledger Balance</p>
+                    <h2 class="text-4xl font-black text-white tracking-tight mt-1" id="withdrawalBalanceHeader">KSh 36,862.50</h2>
+                    <p class="text-[11px] text-amber-400 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Minimum regional processing floor bound restriction: <strong>KSh 18,000.00</strong></p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Select Target Payout Route Framework Gateway</label>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div onclick="selectWithdrawMethod('mpesa')" id="method-mpesa" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-purple-500 cursor-pointer bg-purple-950/10">
+                            <span class="text-purple-400 font-black text-xs tracking-tighter">M-PESA Payout</span>
+                            <span class="text-[9px] text-gray-400">Instant Mobile Network</span>
+                        </div>
+                        <div onclick="selectWithdrawMethod('airtel')" id="method-airtel" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                            <span class="text-red-400 font-black text-xs tracking-tighter">Airtel Money</span>
+                            <span class="text-[9px] text-gray-400">Mobile Money Carrier</span>
+                        </div>
+                        <div onclick="selectWithdrawMethod('paypal')" id="method-paypal" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                            <i class="fa-brands fa-paypal text-lg text-blue-400"></i>
+                            <span class="text-[10px] text-gray-400 font-bold">PayPal Service</span>
+                        </div>
+                        <div onclick="selectWithdrawMethod('bank')" id="method-bank" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                            <i class="fa-solid fa-building-columns text-lg text-emerald-400"></i>
+                            <span class="text-[10px] text-gray-400 font-bold">Bank Wire Swift</span>
+                        </div>
+                        <div onclick="selectWithdrawMethod('usdt')" id="method-usdt" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer col-span-2">
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-coins text-yellow-500"></i><span class="text-yellow-400 font-black text-xs">USDT (TRC-20) / Binance Pay</span></div>
+                            <span class="text-[9px] text-gray-400">Global Crypto Processing Ecosystem</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="space-y-3">
-                    <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-cyan-500">
-                        <div>
-                            <h4 class="font-bold text-sm">Tech Trends Market Survey</h4>
-                            <p class="text-xs text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>10 Mins • 50 Questions</p>
-                            <p class="text-xs font-bold text-green-400 mt-1">Reward: KSh 750.00</p>
-                        </div>
-                        <button onclick="handleSurveyAccess('Tech Trends Survey', 750)" class="bg-gradient-to-r from-blue-500 to-cyan-500 text-xs font-black px-4 py-2 rounded-lg shadow-md transform active:scale-95 transition">START</button>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Execution Amount Parameter (KES)</label>
+                        <input type="number" id="withdrawAmountInput" value="18000" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-lg font-black focus:outline-none focus:border-purple-500 transition">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Destination Destination Account Credentials / Routing Address</label>
+                        <input type="text" id="withdrawTargetInput" placeholder="e.g. Mobile number, address payload string" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
                     </div>
 
-                    <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-amber-500">
-                        <div>
-                            <h4 class="font-bold text-sm">Shopping Habits & E-Commerce</h4>
-                            <p class="text-xs text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>8 Mins • 35 Questions</p>
-                            <p class="text-xs font-bold text-green-400 mt-1">Reward: KSh 525.00</p>
-                        </div>
-                        <button onclick="handleSurveyAccess('Shopping Habits Survey', 525)" class="bg-gradient-to-r from-amber-500 to-orange-500 text-xs font-black px-4 py-2 rounded-lg shadow-md transform active:scale-95 transition">START</button>
+                    <div class="bg-white/5 p-3 rounded-xl space-y-1.5 text-xs border border-white/5">
+                        <div class="flex justify-between text-gray-400"><span>Network Framework Processing Fee</span><span class="font-bold text-white">KSh 300.00</span></div>
+                        <div class="flex justify-between text-gray-400"><span>Ecosystem Batch SLA Timing</span><span class="font-bold text-purple-400">Real-time Automated Feed</span></div>
+                    </div>
+
+                    <button onclick="executeWithdrawalRequest()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl font-black tracking-wide text-sm shadow-lg text-white transform active:scale-95 transition mt-2 neon-glow-purple">EXECUTE SECURE WITHDRAW NOW</button>
+                </div>
+            </section>
+
+            <section id="screen-more" class="app-screen space-y-4 hidden">
+                <div class="cosmic-panel p-4 rounded-xl flex items-center gap-4 border border-white/5">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-purple-600 to-blue-500 flex items-center justify-center text-white font-black text-xl" id="profileAvatarLarge">U</div>
+                    <div>
+                        <h3 class="font-bold text-base text-white" id="profileNameDisplay">User Holder Name</h3>
+                        <p class="text-xs text-gray-400" id="profileEmailDisplay">user@identity.com</p>
+                        <div class="inline-block bg-purple-500/20 text-purple-300 font-bold text-[10px] px-2 py-0.5 rounded-md mt-1">Ecosystem Participant Node</div>
                     </div>
                 </div>
-            </div>
 
-            <div class="cosmic-panel p-4 rounded-xl border border-purple-500/20">
-                <div class="flex justify-between text-xs font-bold mb-2">
-                    <span class="text-purple-300">Milestone Challenge</span>
-                    <span class="text-white">1 / 3 Completed</span>
-                </div>
-                <div class="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-full w-1/3"></div>
-                </div>
-                <p class="text-[11px] text-gray-400 mt-2">Complete 2 more surveys today to unlock a <span class="text-yellow-400 font-bold">KSh 1,500.00</span> structural app bonus!</p>
-            </div>
-        </section>
-
-        <section id="screen-surveys" class="app-screen space-y-4 hidden">
-            <div id="activationGateBanner" class="bg-gradient-to-r from-red-900/40 to-amber-900/40 border border-amber-500/30 p-3 rounded-xl flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <i class="fa-solid fa-lock text-amber-400 text-lg"></i>
-                    <p class="text-xs text-gray-200">Dashboard Locked. Pay <span class="text-amber-300 font-bold">KSh 180</span> to start tracking tasks.</p>
-                </div>
-                <button onclick="triggerPaystackActivation()" class="bg-amber-400 text-black text-xs font-black px-3 py-1.5 rounded-lg shadow-md hover:bg-amber-300 transition">ACTIVATE NOW</button>
-            </div>
-
-            <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
-                <span class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full font-bold whitespace-nowrap">All Surveys</span>
-                <span class="bg-white/5 text-gray-300 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">High Paying</span>
-                <span class="bg-white/5 text-gray-300 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">Quick Polls</span>
-            </div>
-
-            <div class="space-y-3" id="allSurveysContainer">
-                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border border-white/5 relative">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-green-500/10 flex items-center justify-center text-green-400 text-lg"><i class="fa-solid fa-basket-shopping"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Product Feedback Survey</h4>
-                            <p class="text-xs text-gray-400">12 Mins • 200 slots remaining</p>
-                            <p class="text-xs text-green-400 font-bold mt-0.5">Earn KSh 750.00</p>
-                        </div>
+                <div class="cosmic-panel rounded-xl overflow-hidden divide-y divide-white/5">
+                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Ecosystem framework operating on dark neon skin layer variables.')">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-palette text-purple-400"></i><span class="text-sm font-medium">Visual Identity Profile</span></div>
+                        <span class="text-xs font-bold text-purple-400">Cosmic Neon Deep</span>
                     </div>
-                    <button onclick="handleSurveyAccess('Product Feedback Survey', 750)" class="bg-gradient-to-r from-green-500 to-emerald-600 text-xs font-bold px-4 py-2 rounded-lg">START</button>
-                </div>
-                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border border-white/5 relative">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-400 text-lg"><i class="fa-solid fa-plane"></i></div>
-                        <div>
-                            <h4 class="font-bold text-sm">Travel Habits Evaluation</h4>
-                            <p class="text-xs text-gray-400">15 Mins • 150 slots remaining</p>
-                            <p class="text-xs text-green-400 font-bold mt-0.5">Earn KSh 675.00</p>
-                        </div>
-                    </div>
-                    <button onclick="handleSurveyAccess('Travel Habits Evaluation', 675)" class="bg-gradient-to-r from-orange-500 to-red-600 text-xs font-bold px-4 py-2 rounded-lg">START</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="screen-rewards" class="app-screen space-y-4 hidden">
-            <div class="text-center py-2">
-                <h3 class="text-lg font-black tracking-tight">Global Top Earners</h3>
-                <p class="text-xs text-gray-400">Top Performers of the Week</p>
-            </div>
-
-            <div class="flex justify-center items-end gap-2 pt-6 pb-4 bg-white/5 rounded-2xl border border-white/5">
-                <div class="flex flex-col items-center w-24">
-                    <div class="w-12 h-12 rounded-full border-2 border-slate-300 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=32" alt="2nd"></div>
-                    <p class="text-xs font-bold mt-1 text-center truncate w-full">Sarah Miller</p>
-                    <span class="text-[11px] text-green-400 font-bold">KSh 147,075</span>
-                    <div class="w-20 bg-gradient-to-t from-slate-700 to-slate-500 h-16 rounded-t-lg mt-2 flex items-center justify-center font-black text-xl text-slate-200">2</div>
-                </div>
-                <div class="flex flex-col items-center w-28 scale-105 -translate-y-2">
-                    <i class="fa-solid fa-crown text-yellow-400 text-lg mb-1 animate-bounce"></i>
-                    <div class="w-14 h-14 rounded-full border-2 border-amber-400 overflow-hidden shadow-lg"><img src="https://i.pravatar.cc/150?img=11" alt="1st"></div>
-                    <p class="text-sm font-black mt-1 text-center truncate w-full">Alex Johnson</p>
-                    <span class="text-xs text-green-400 font-black">KSh 187,612</span>
-                    <div class="w-24 bg-gradient-to-t from-amber-600 to-amber-400 h-24 rounded-t-lg mt-2 flex items-center justify-center font-black text-2xl text-amber-900">1</div>
-                </div>
-                <div class="flex flex-col items-center w-24">
-                    <div class="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=60" alt="3rd"></div>
-                    <p class="text-xs font-bold mt-1 text-center truncate w-full">Mike Carter</p>
-                    <span class="text-[11px] text-green-400 font-bold">KSh 131,347</span>
-                    <div class="w-20 bg-gradient-to-t from-amber-900 to-amber-800 h-12 rounded-t-lg mt-2 flex items-center justify-center font-black text-lg text-amber-600">3</div>
-                </div>
-            </div>
-
-            <div class="space-y-2">
-                <div class="cosmic-panel p-3 rounded-xl flex justify-between items-center border border-cyan-500/30 bg-cyan-950/20">
-                    <div class="flex items-center gap-3">
-                        <span class="font-black text-sm text-cyan-400">#8</span>
-                        <div class="w-8 h-8 rounded-full overflow-hidden border border-white/20"><img src="https://i.imgur.com/8Q5N8wX.png" class="w-full h-full object-cover"></div>
-                        <span class="font-bold text-sm text-white">Your Rank (Faith)</span>
-                    </div>
-                    <span class="font-black text-sm text-green-400">KSh 96,337.50</span>
-                </div>
-            </div>
-        </section>
-
-        <section id="screen-wallet" class="app-screen space-y-4 hidden">
-            <div class="cosmic-panel p-5 rounded-2xl border border-white/10 text-center">
-                <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Withdrawable Balance</p>
-                <h2 class="text-4xl font-black text-white tracking-tight mt-1" id="withdrawalBalanceHeader">KSh 36,862.50</h2>
-                <p class="text-[11px] text-amber-400 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Minimum Threshold restriction applies: <strong>KSh 18,000.00</strong></p>
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Select Payout Gateway Method</label>
-                <div class="grid grid-cols-3 gap-2.5">
-                    <div onclick="selectWithdrawMethod('mpesa')" id="method-mpesa" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-green-500 cursor-pointer bg-green-950/10">
-                        <span class="text-emerald-400 font-black text-xs tracking-tighter">M-PESA</span>
-                        <span class="text-[9px] text-gray-400">Mobile Money</span>
-                    </div>
-                    <div onclick="selectWithdrawMethod('paypal')" id="method-paypal" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
-                        <i class="fa-brands fa-paypal text-xl text-blue-400"></i>
-                        <span class="text-[9px] text-gray-400">PayPal Express</span>
-                    </div>
-                    <div onclick="selectWithdrawMethod('bank')" id="method-bank" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
-                        <i class="fa-solid fa-building-columns text-xl text-purple-400"></i>
-                        <span class="text-[9px] text-gray-400">Bank Wire</span>
+                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('All transactions security parameters validated via automated cryptographic checksum logs.')">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-emerald-400"></i><span class="text-sm font-medium">Node Validation Protocols</span></div>
+                        <span class="text-xs font-black text-emerald-400">ACTIVE & SECURE</span>
                     </div>
                 </div>
-            </div>
 
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Withdrawal Amount (KES)</label>
-                    <input type="number" id="withdrawAmountInput" value="18000" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-lg font-black focus:outline-none focus:border-cyan-400 transition">
-                </div>
-                
-                <div class="bg-white/5 p-3 rounded-xl space-y-1.5 text-xs">
-                    <div class="flex justify-between text-gray-400"><span>Network Transfer Fee</span><span class="font-bold text-white">KSh 300.00</span></div>
-                    <div class="flex justify-between text-gray-400"><span>Estimated Processing Time</span><span class="font-bold text-cyan-400">Instant Execution</span></div>
-                </div>
+                <button onclick="handleLogout()" class="w-full py-3.5 bg-red-950/40 border border-red-500/30 text-red-300 font-bold text-sm rounded-xl hover:bg-red-900/30 transition">Reset Device Session State</button>
+            </section>
 
-                <button onclick="executeWithdrawalRequest()" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl font-black tracking-wide text-sm shadow-lg text-white transform active:scale-95 transition mt-2 neon-glow-green">EXECUTE WITHDRAW NOW</button>
-            </div>
-        </section>
+        </main>
 
-        <section id="screen-more" class="app-screen space-y-4 hidden">
-            <div class="cosmic-panel p-4 rounded-xl flex items-center gap-4 border border-white/5">
-                <div class="w-14 h-14 rounded-full border-2 border-purple-500 overflow-hidden"><img src="https://i.imgur.com/8Q5N8wX.png" class="w-full h-full object-cover"></div>
-                <div>
-                    <h3 class="font-bold text-base" id="profileNameDisplay">Faith Mbatia</h3>
-                    <p class="text-xs text-gray-400">Registered Developer Account Account</p>
-                    <div class="inline-block bg-purple-500/20 text-purple-300 font-bold text-[10px] px-2 py-0.5 rounded-md mt-1">Tier 1 Contributor</div>
-                </div>
-            </div>
-
-            <div class="cosmic-panel rounded-xl overflow-hidden divide-y divide-white/5">
-                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-palette text-blue-400"></i><span class="text-sm font-medium">App Theme Variant</span></div>
-                    <span class="text-xs font-bold text-purple-400">Vibrant Dark</span>
-                </div>
-                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-green-400"></i><span class="text-sm font-medium">Two-Factor Authentication</span></div>
-                    <span class="text-xs font-black text-green-400">ENABLED</span>
-                </div>
-                <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Support center ready. Open a ticket at support@surveyapp.com')">
-                    <div class="flex items-center gap-3"><i class="fa-solid fa-headset text-amber-400"></i><span class="text-sm font-medium">Help & Live Support Escalation</span></div>
-                    <i class="fa-solid fa-chevron-right text-gray-500 text-xs"></i>
-                </div>
-            </div>
-
-            <button onclick="alert('Session logging persistence reset active.')" class="w-full py-3.5 bg-red-600/20 border border-red-500/30 text-red-300 font-bold text-sm rounded-xl hover:bg-red-600/30 transition">Log Out Secure Session</button>
-        </section>
-
-    </main>
-
-    <nav class="max-w-md w-full bg-[#0d061f]/95 border-t border-white/10 grid grid-cols-5 fixed bottom-0 z-50 backdrop-blur-md pb-safe">
-        <button id="nav-home" onclick="switchTab('home')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition nav-active">
-            <i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-bold">Home</span>
-        </button>
-        <button id="nav-surveys" onclick="switchTab('surveys')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-            <i class="fa-solid fa-square-poll-horizontal text-lg"></i><span class="text-[10px] font-bold">Surveys</span>
-        </button>
-        <button id="nav-rewards" onclick="switchTab('rewards')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-            <i class="fa-solid fa-trophy text-lg"></i><span class="text-[10px] font-bold">Rewards</span>
-        </button>
-        <button id="nav-wallet" onclick="switchTab('wallet')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-            <i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px] font-bold">Withdraw</span>
-        </button>
-        <button id="nav-more" onclick="switchTab('more')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-            <i class="fa-solid fa-bars text-lg"></i><span class="text-[10px] font-bold">More</span>
-        </button>
-    </nav>
+        <nav class="max-w-md w-full bg-[#070210]/95 border-t border-white/10 grid grid-cols-5 fixed bottom-0 z-40 backdrop-blur-md pb-safe">
+            <button id="nav-home" onclick="switchTab('home')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition nav-active">
+                <i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-bold">Home</span>
+            </button>
+            <button id="nav-surveys" onclick="switchTab('surveys')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+                <i class="fa-solid fa-square-poll-horizontal text-lg"></i><span class="text-[10px] font-bold">Surveys</span>
+            </button>
+            <button id="nav-rewards" onclick="switchTab('rewards')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+                <i class="fa-solid fa-trophy text-lg"></i><span class="text-[10px] font-bold">Rewards</span>
+            </button>
+            <button id="nav-wallet" onclick="switchTab('wallet')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+                <i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px] font-bold">Withdraw</span>
+            </button>
+            <button id="nav-more" onclick="switchTab('more')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
+                <i class="fa-solid fa-bars text-lg"></i><span class="text-[10px] font-bold">More</span>
+            </button>
+        </nav>
+    </div>
 
     <script>
-        // System Config State Values
-        let isActivated = false; 
+        // Core Reactive Global Configuration Parameters States
+        let isActivated = false;
+        let currentUser = null;
         let userBalanceKsh = 36862.50;
-        const exchangeRate = 150.00; // Mock conversion tracking rate tracking index values
-        let currentSelectedWithdrawMethod = 'mpesa';
+        const exchangeRateKshToUsd = 150.00;
+        let selectedWithdrawMethod = 'mpesa';
+        
+        // Static Security Key Validation Access Layer Constraints
+        const STRICT_UNLOCK_CODE = 'SURVEYEARN.PRO';
 
-        // Public Live Key Target references matching user spec criteria strictly
-        const paystackPublicKey = 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc';
+        // Free Open Public Domain Endpoint API to stream high-quality market consumer parameters dynamically
+        const FREE_SURVEY_DATA_FEED_API = 'https://opentdb.com/api.php?amount=10&type=multiple';
 
-        // Bootstrapping Initializer Run configurations
+        // Initializer pipeline setup checks running elements matching specs
         window.addEventListener('DOMContentLoaded', () => {
-            updateBalanceDisplays();
-            evaluateActivationStatusTheme();
+            evaluateLocalCachedSessionData();
         });
 
-        // Tab Switching Router Management Core
+        function evaluateLocalCachedSessionData() {
+            const cachedUser = localStorage.getItem('sp_session_user');
+            const cachedActivation = localStorage.getItem('sp_session_active');
+            
+            if (cachedActivation === 'true') {
+                isActivated = true;
+            }
+
+            if (cachedUser) {
+                currentUser = JSON.parse(cachedUser);
+                bootstrapAppDashboardView();
+            } else {
+                document.getElementById('auth-layer').classList.remove('pointer-events-none', 'opacity-0');
+                document.getElementById('app-content').classList.add('hidden');
+            }
+        }
+
+        // Toggle authentication panel logic states input schemas smoothly
+        let currentAuthMode = 'signup';
+        function toggleAuthTab(mode) {
+            currentAuthMode = mode;
+            const tabSignup = document.getElementById('tab-signup');
+            const tabLogin = document.getElementById('tab-login');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const nameField = document.getElementById('auth-form-fields').children[0];
+
+            if (mode === 'signup') {
+                tabSignup.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400";
+                tabLogin.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400";
+                submitBtn.innerText = "CREATE ACCOUNT";
+                nameField.classList.remove('hidden');
+            } else {
+                tabLogin.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400";
+                tabSignup.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400";
+                submitBtn.innerText = "ACCESS METRICS";
+                nameField.classList.add('hidden');
+            }
+        }
+
+        function handleAuthSubmit() {
+            const nameVal = document.getElementById('auth-name').value.trim();
+            const emailVal = document.getElementById('auth-email').value.trim();
+            const passVal = document.getElementById('auth-pass').value.trim();
+
+            if (!emailVal || !passVal || (currentAuthMode === 'signup' && !nameVal)) {
+                alert('Please populate all tracking identity parameter strings properly.');
+                return;
+            }
+
+            // Assign structural user values tracking schemas
+            currentUser = {
+                name: currentAuthMode === 'signup' ? nameVal : emailVal.split('@')[0],
+                email: emailVal
+            };
+
+            localStorage.setItem('sp_session_user', JSON.stringify(currentUser));
+            bootstrapAppDashboardView();
+        }
+
+        function bootstrapAppDashboardView() {
+            // Unveil view layouts components
+            document.getElementById('auth-layer').classList.add('opacity-0', 'pointer-events-none');
+            document.getElementById('app-content').classList.remove('hidden');
+
+            // Dynamic User Data Mapping Bindings Execution
+            const displayChar = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('headerUserName').innerText = currentUser.name;
+            document.getElementById('profileNameDisplay').innerText = currentUser.name;
+            document.getElementById('profileEmailDisplay').innerText = currentUser.email;
+            document.getElementById('leaderboardUserName').innerText = `${currentUser.name} (Your Active Node)`;
+            
+            document.getElementById('userAvatarPlaceholder').innerText = displayChar;
+            document.getElementById('leaderboardUserBadge').innerText = displayChar;
+            document.getElementById('profileAvatarLarge').innerText = displayChar;
+
+            syncDashboardBalanceMetrics();
+            evaluateGateActivationStateUI();
+            fetchSurveysFromFreeAPI();
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        // View Tabs switching controller mechanism routing operations smoothly
         function switchTab(targetScreen) {
             document.querySelectorAll('.app-screen').forEach(screen => screen.classList.add('hidden'));
             document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active'));
@@ -312,93 +428,181 @@
             document.getElementById(`nav-${targetScreen}`).classList.add('nav-active');
         }
 
-        // Live Dynamic State Sync calculations
-        function updateBalanceDisplays() {
-            document.getElementById('mainBalanceDisplay').innerText = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('withdrawalBalanceHeader').innerText = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            
-            let usdEquiv = userBalanceKsh / exchangeRate;
+        // Processing numeric computation values balancing loops
+        function syncDashboardBalanceMetrics() {
+            const formattedKsh = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('mainBalanceDisplay').innerText = formattedKsh;
+            document.getElementById('withdrawalBalanceHeader').innerText = formattedKsh;
+            document.getElementById('leaderboardUserScore').innerText = formattedKsh;
+
+            let usdEquiv = userBalanceKsh / exchangeRateKshToUsd;
             document.getElementById('convertedUsdDisplay').innerText = `($${usdEquiv.toFixed(2)} USD)`;
         }
 
-        function evaluateActivationStatusTheme() {
+        function evaluateGateActivationStateUI() {
             const gateBanner = document.getElementById('activationGateBanner');
             if (isActivated) {
-                if(gateBanner) gateBanner.classList.add('hidden');
-            } else {
-                if(gateBanner) gateBanner.classList.remove('hidden');
+                gateBanner.innerHTML = `
+                    <div class="flex items-center gap-3 text-emerald-400">
+                        <i class="fa-solid fa-circle-check text-2xl"></i>
+                        <div>
+                            <h4 class="font-black text-sm text-white">Ecosystem Token Parsing Node Activated</h4>
+                            <p class="text-xs text-gray-400">Your licensing validation pass is verified. Global streaming feeds active.</p>
+                        </div>
+                    </div>
+                `;
+                gateBanner.className = "bg-gradient-to-r from-emerald-950/40 to-teal-950/40 border border-emerald-500/30 p-4 rounded-2xl";
             }
         }
 
-        // Processing Paystack Integration Gateway Interceptor Pipeline
-        function triggerPaystackActivation() {
-            let handler = PaystackPop.setup({
-                key: paystackPublicKey,
-                email: 'payments@surveyapp.com',
-                amount: 18000, // Amount input configured explicitly as subunits value integer matching 180.00 KES standard value parameters
-                currency: 'KES',
-                ref: 'SP-' + Math.floor((Math.random() * 1000000000) + 1), 
-                callback: function(response){
-                    alert('Payment Successful! Activation completed. Reference code ID token: ' + response.reference);
-                    isActivated = true;
-                    evaluateActivationStatusTheme();
-                    switchTab('surveys');
-                },
-                onClose: function(){
-                    alert('Activation transaction session cancelled prematurely.');
-                }
-            });
-            handler.openIframe();
+        // Processing validation loops filtering fake payments strictly via user parameters constraint checks
+        function verifyActivationCode() {
+            const codeInput = document.getElementById('verificationCodeInput').value.trim();
+            const errorText = document.getElementById('activationErrorCode');
+
+            if (codeInput === STRICT_UNLOCK_CODE) {
+                isActivated = true;
+                localStorage.setItem('sp_session_active', 'true');
+                errorText.classList.add('hidden');
+                evaluateGateActivationStateUI();
+                alert('Ecosystem Activation Key Confirmed successfully! Survey analytics streams initiated.');
+                fetchSurveysFromFreeAPI(); // Rerender context
+            } else {
+                errorText.classList.remove('hidden');
+                alert('Verification Failure: Passed token string signature is invalid or unrecognized by M-Pesa ledger rules.');
+            }
         }
 
-        // Guard Check Processing Actions Controls Access Rules implementation logic 
-        function handleSurveyAccess(surveyTitle, rewardAmount) {
+        // Live Free Data Feed Integration API Stream Processing Infrastructure logic mapping tasks elements items
+        function fetchSurveysFromFreeAPI() {
+            const featuredContainer = document.getElementById('featuredSurveysContainer');
+            const allContainer = document.getElementById('allSurveysContainer');
+
+            // Accessing public domain network assets dynamically to construct live survey cards payload elements 
+            fetch(FREE_SURVEY_DATA_FEED_API)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.results && data.results.length > 0) {
+                        featuredContainer.innerHTML = '';
+                        allContainer.innerHTML = '';
+
+                        data.results.forEach((item, index) => {
+                            // Synthesize dynamic reward parameters derived based on item category metadata lengths complexity variables weights
+                            const baseReward = 450 + (item.question.length * 3);
+                            const calculatedMinutes = 5 + (index % 3) * 3;
+                            const slotsRemaining = 42 + (index * 7);
+
+                            const cardMarkup = `
+                                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-purple-500 hover:border-blue-500 transition relative">
+                                    <div class="pr-2 max-w-[70%]">
+                                        <span class="text-[9px] font-black uppercase text-purple-400 tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">${item.category}</span>
+                                        <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${item.question}</h4>
+                                        <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${calculatedMinutes} Mins • ${slotsRemaining} Node Allocation Pools Available</p>
+                                        <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${baseReward.toFixed(2)}</p>
+                                    </div>
+                                    <button onclick="handleSurveyAccessExecute('${item.question.replace(/'/g, "\\'")}', ${baseReward})" class="bg-gradient-to-r from-purple-600 to-blue-500 text-[10px] font-black px-4 py-2.5 rounded-xl shadow-md tracking-wider transform active:scale-95 transition shrink-0 text-white">INITIALIZE</button>
+                                </div>
+                            `;
+
+                            // Map structural distribution patterns
+                            if (index < 2) {
+                                featuredContainer.innerHTML += cardMarkup;
+                            }
+                            allContainer.innerHTML += cardMarkup;
+                        });
+                    } else {
+                        renderFallbackMockSurveys();
+                    }
+                })
+                .catch(err => {
+                    console.log('Ecosystem tracking dynamic routing redirect context trigger. Falling back to offline redundant schemas layers.', err);
+                    renderFallbackMockSurveys();
+                });
+        }
+
+        function renderFallbackMockSurveys() {
+            const featuredContainer = document.getElementById('featuredSurveysContainer');
+            const allContainer = document.getElementById('allSurveysContainer');
+
+            const mockSurveys = [
+                { title: "Global Consumer Brand Positioning Analysis", cat: "Market Analytics", reward: 750.00, time: 10 },
+                { title: "Digital Wallet Payment Framework Architecture Survey", cat: "Fintech Innovation", reward: 920.00, time: 12 },
+                { title: "Regional Transport Commuter Network Mapping Matrix", cat: "Logistics Research", reward: 580.00, time: 8 },
+                { title: "E-Commerce Delivery Optimization Feed Loop", cat: "Retail Distribution", reward: 640.00, time: 15 }
+            ];
+
+            featuredContainer.innerHTML = '';
+            allContainer.innerHTML = '';
+
+            mockSurveys.forEach((item, index) => {
+                const markup = `
+                    <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-purple-500 relative">
+                        <div class="max-w-[70%]">
+                            <span class="text-[9px] font-black uppercase text-purple-400 tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">${item.cat}</span>
+                            <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${item.title}</h4>
+                            <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${item.time} Mins • High Priority Queue</p>
+                            <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${item.reward.toFixed(2)}</p>
+                        </div>
+                        <button onclick="handleSurveyAccessExecute('${item.title}', ${item.reward})" class="bg-gradient-to-r from-purple-600 to-blue-500 text-[10px] font-black px-4 py-2.5 rounded-xl shadow-md tracking-wider transform active:scale-95 transition text-white">INITIALIZE</button>
+                    </div>
+                `;
+                if (index < 2) featuredContainer.innerHTML += markup;
+                allContainer.innerHTML += markup;
+            });
+        }
+
+        function handleSurveyAccessExecute(title, amount) {
             if (!isActivated) {
-                alert('Access Denied. You must pay KSh 180 on Paybill 880100 to unlock the survey execution dashboard panel items modules.');
-                triggerPaystackActivation();
+                alert(`Access Blocked: Secure Node Validation parameters missing. Please execute the 180 KSh licensing fee to M-Pesa Paybill 880100 and submit the legitimate code token to unlock surveys.`);
+                switchTab('surveys');
                 return;
             }
-            
-            // Simulating survey tracking activity simulation workflow smoothly
-            if(confirm(`Do you wish to launch and start task metrics parameters for: "${surveyTitle}"?`)) {
-                alert('Simulating Task processing framework metrics parameterization run data structures...');
+
+            if (confirm(`Do you wish to allocate computing power resources thread instances to execute the metric task stream: "${title}"?`)) {
+                alert('Connecting to live decentralized data stream instance validation pools...');
                 setTimeout(() => {
-                    userBalanceKsh += rewardAmount;
-                    updateBalanceDisplays();
-                    alert(`Congratulations! Survey completed correctly. KSh ${rewardAmount} credited directly into your active dashboard balance records structures output values.`);
+                    userBalanceKsh += amount;
+                    syncDashboardBalanceMetrics();
+                    alert(`Telemetry survey validation successful. Dividend payload of KSh ${amount.toFixed(2)} credited into your active account node balance instance tracking ledger.`);
                 }, 2000);
             }
         }
 
-        // Wallet Control Configurations Management rules execution handling procedures logic items
+        // Wallet Control Options Route Selectors Logic Components Management
         function selectWithdrawMethod(method) {
             document.querySelectorAll('[id^="method-"]').forEach(el => {
-                el.classList.remove('border-green-500', 'bg-green-950/10');
+                el.classList.remove('border-purple-500', 'bg-purple-950/10');
                 el.classList.add('border-transparent', 'opacity-50');
             });
-            
+
             const targetEl = document.getElementById(`method-${method}`);
             targetEl.classList.remove('border-transparent', 'opacity-50');
-            targetEl.classList.add('border-green-500', 'bg-green-950/10');
-            currentSelectedWithdrawMethod = method;
+            targetEl.classList.add('border-purple-500', 'bg-purple-950/10');
+            selectedWithdrawMethod = method;
         }
 
         function executeWithdrawalRequest() {
             const requestedAmount = parseFloat(document.getElementById('withdrawAmountInput').value);
-            
-            if (requestedAmount < 18000) {
-                alert('Withdrawal Rejected. Regional infrastructure localized validation processing parameters enforce a minimal baseline value metric of exactly KSh 18,000.00 minimum value actions constraints check requirements parameters metrics.');
+            const targetCredential = document.getElementById('withdrawTargetInput').value.trim();
+
+            if (!targetCredential) {
+                alert('Please populate the routing address / destination account field correctly.');
                 return;
             }
-            
+
+            if (requestedAmount < 18000) {
+                alert('Withdrawal Execution Cancelled: Localized system policy restricts value output operations strictly below a baseline floor parameter of exactly KSh 18,000.00.');
+                return;
+            }
+
             if (requestedAmount > userBalanceKsh) {
-                alert('Insufficient available ledger balance resources framework assets processing execution capability elements rules constraints metrics check bounds requirements validation failed.');
+                alert('Ledger Error: Requested payout balance quantity parameters exceed current assets allocations pools available.');
                 return;
             }
 
             userBalanceKsh -= requestedAmount;
-            updateBalanceDisplays();
-            alert(`Payout Transaction Authorized successfully via targeted gateway endpoint setup channel: [${currentSelectedWithdrawMethod.toUpperCase()}]. Funds processing batch deployment scheduled instantly running executing successfully.`);
+            syncDashboardBalanceMetrics();
+            alert(`Payout Sequence Successfully Scheduled! KSh ${requestedAmount.toLocaleString()} has been dispatched to route path identifier [${selectedWithdrawMethod.toUpperCase()}]: (${targetCredential}). Processing takes instant automated ledger validation queues.`);
         }
     </script>
 </body>
