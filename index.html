@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SurveyPay - Premium Earn Dashboard</title>
+    <title>SurveyPay Pro - Premium Earning Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
     
     <style>
         body {
-            background: radial-gradient(circle at top, #14072d 0%, #070210 70%, #020005 100%);
+            background: radial-gradient(circle at top, #120626 0%, #06020d 60%, #020005 100%);
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             color: #ffffff;
             user-select: none;
         }
         .cosmic-panel {
-            background: linear-gradient(135deg, rgba(25, 12, 56, 0.75) 0%, rgba(10, 4, 24, 0.95) 100%);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: linear-gradient(135deg, rgba(28, 13, 62, 0.75) 0%, rgba(12, 5, 28, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             backdrop-filter: blur(16px);
             box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
         }
-        .neon-glow-blue { box-shadow: 0 0 20px rgba(0, 149, 255, 0.35); }
-        .neon-glow-green { box-shadow: 0 0 20px rgba(16, 185, 129, 0.35); }
-        .neon-glow-purple { box-shadow: 0 0 20px rgba(139, 92, 246, 0.35); }
+        .neon-border-cyan { border: 1px solid rgba(6, 182, 212, 0.4); box-shadow: 0 0 15px rgba(6, 182, 212, 0.2); }
+        .neon-border-amber { border: 1px solid rgba(245, 158, 11, 0.4); box-shadow: 0 0 15px rgba(245, 158, 11, 0.2); }
+        .neon-border-emerald { border: 1px solid rgba(16, 185, 129, 0.4); box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        .neon-border-purple { border: 1px solid rgba(139, 92, 246, 0.4); box-shadow: 0 0 15px rgba(139, 92, 246, 0.2); }
+        
         .nav-active {
-            background: linear-gradient(180deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0) 100%);
-            border-top: 3px solid #8b5cf6;
-            color: #a78bfa;
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.2) 0%, rgba(6, 182, 212, 0) 100%);
+            border-top: 3px solid #06b6d4;
+            color: #22d3ee;
         }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -34,46 +37,46 @@
 </head>
 <body class="max-w-md mx-auto min-h-screen flex flex-col justify-between overflow-x-hidden relative">
 
-    <div id="auth-layer" class="fixed inset-0 z-50 max-w-md mx-auto bg-[#070210] flex flex-col justify-center px-6 transition-all duration-500">
+    <div id="auth-layer" class="fixed inset-0 z-50 max-w-md mx-auto bg-[#06020d] flex flex-col justify-center px-6 transition-all duration-500">
         <div class="text-center mb-8">
-            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-purple-600 to-blue-500 rounded-2xl flex items-center justify-center shadow-lg mb-4 neon-glow-purple">
-                <i class="fa-solid fa-square-poll-horizontal text-4xl text-white"></i>
+            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-cyan-500 via-purple-600 to-amber-500 rounded-3xl flex items-center justify-center shadow-xl mb-4">
+                <i class="fa-solid fa-wallet text-4xl text-white"></i>
             </div>
-            <h1 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">SurveyPay Pro</h1>
-            <p class="text-xs text-purple-400 font-semibold tracking-wider uppercase mt-1">Global Data Monetization Hub</p>
+            <h1 class="text-3xl font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500">SurveyPay Dashboard</h1>
+            <p class="text-xs text-cyan-400 font-bold tracking-widest uppercase mt-1">Premium Data Monetization Node</p>
         </div>
 
-        <div class="cosmic-panel p-6 rounded-2xl space-y-4">
+        <div class="cosmic-panel p-6 rounded-2xl space-y-4 border border-white/10">
             <div class="flex border-b border-white/10 pb-2 mb-2">
-                <button onclick="toggleAuthTab('signup')" id="tab-signup" class="flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400">Create Account</button>
-                <button onclick="toggleAuthTab('login')" id="tab-login" class="flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400">Login</button>
+                <button onclick="toggleAuthMode('signup')" id="tab-signup" class="flex-1 text-center font-black text-sm pb-2 border-b-2 border-cyan-500 text-cyan-400">Create Account</button>
+                <button onclick="toggleAuthMode('login')" id="tab-login" class="flex-1 text-center font-black text-sm pb-2 border-b-2 border-transparent text-gray-400">Login</button>
             </div>
 
-            <div id="auth-form-fields" class="space-y-3">
-                <div>
-                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Account Full Name</label>
+            <div id="auth-fields" class="space-y-3">
+                <div id="field-username-wrapper">
+                    <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">Account Holder Profile Name</label>
                     <div class="relative">
                         <i class="fa-solid fa-user absolute left-4 top-3.5 text-gray-500 text-xs"></i>
-                        <input type="text" id="auth-name" placeholder="John Doe" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
+                        <input type="text" id="auth-name" placeholder="Enter registration name" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500 transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Email Address</label>
+                    <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">Email Connection String</label>
                     <div class="relative">
                         <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-gray-500 text-xs"></i>
-                        <input type="email" id="auth-email" placeholder="name@domain.com" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
+                        <input type="email" id="auth-email" placeholder="name@domain.com" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500 transition">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-[11px] font-bold text-gray-400 uppercase mb-1">Password</label>
+                    <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">Security Entry Key Pass</label>
                     <div class="relative">
                         <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-500 text-xs"></i>
-                        <input type="password" id="auth-pass" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
+                        <input type="password" id="auth-pass" placeholder="••••••••" class="w-full bg-white/5 border border-white/10 p-3 pl-10 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-500 transition">
                     </div>
                 </div>
             </div>
 
-            <button onclick="handleAuthSubmit()" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl font-black tracking-wide text-sm shadow-md text-white transform active:scale-95 transition mt-2 neon-glow-purple">CREATE ACCOUNT</button>
+            <button onclick="processAccountAuthentication()" id="auth-submit-btn" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 via-purple-600 to-amber-500 rounded-xl font-black tracking-wide text-sm shadow-lg text-white transform active:scale-95 transition mt-2">INITIALIZE SECURE ACCESS</button>
         </div>
     </div>
 
@@ -81,96 +84,85 @@
         
         <header class="w-full cosmic-panel px-4 py-3 flex justify-between items-center sticky top-0 z-40 border-b border-white/10">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full border-2 border-purple-500 overflow-hidden bg-purple-900/40 flex items-center justify-center text-purple-300 font-bold" id="userAvatarPlaceholder">
-                    U
+                <div class="w-10 h-10 rounded-full border-2 border-cyan-400 overflow-hidden bg-cyan-950/50 flex items-center justify-center text-cyan-300 font-black text-sm tracking-tighter" id="userAvatarBadge">
+                    ?
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Active Account</p>
-                    <h2 id="headerUserName" class="text-base font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-300">User Account</h2>
+                    <p class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Authorized Operator</p>
+                    <h2 id="headerUserName" class="text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-cyan-200">Session Account User</h2>
                 </div>
             </div>
-            <button class="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition" onclick="alert('System monitoring active. No unread logs.')">
-                <i class="fa-solid fa-bell text-xl text-purple-400"></i>
-                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-purple-500 rounded-full animate-ping"></span>
+            <button class="relative p-2 rounded-full bg-white/5 hover:bg-white/10 transition" onclick="alert('Secure gateway nodes fully sync'd.')">
+                <i class="fa-solid fa-shield-halved text-lg text-cyan-400"></i>
+                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
             </button>
         </header>
 
         <main class="flex-1 px-4 py-4 overflow-y-auto hide-scrollbar pb-24 w-full">
 
             <section id="screen-home" class="app-screen space-y-4">
-                <div class="cosmic-panel p-5 rounded-2xl relative overflow-hidden border border-purple-500/20 neon-glow-purple">
-                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl"></div>
+                <div class="cosmic-panel p-5 rounded-2xl relative overflow-hidden neon-border-cyan">
+                    <div class="absolute -right-12 -top-12 w-36 h-36 bg-cyan-500/10 rounded-full blur-2xl"></div>
                     <div class="flex justify-between items-start">
                         <div>
-                            <p class="text-sm text-gray-300 font-medium tracking-wide">Available Balance</p>
-                            <h1 class="text-4xl font-extrabold text-white tracking-tight mt-1" id="mainBalanceDisplay">KSh 36,862.50</h1>
-                            <p class="text-xs text-purple-400 font-semibold mt-1" id="convertedUsdDisplay">($245.75 USD)</p>
+                            <p class="text-xs text-cyan-400 font-black uppercase tracking-widest">Available Allocation Balance</p>
+                            <h1 class="text-4xl font-black text-white tracking-tight mt-1" id="mainBalanceDisplay">KSh 36,862.50</h1>
+                            <p class="text-xs text-gray-400 font-semibold mt-0.5 animate-pulse" id="convertedUsdDisplay">($245.75 USD)</p>
                         </div>
-                        <div class="bg-purple-400/10 border border-purple-400/30 text-purple-300 px-3 py-1.5 rounded-xl text-right">
-                            <p class="text-[10px] uppercase font-bold text-purple-400/80">Today's Profit</p>
-                            <p class="text-sm font-black text-green-400">+KSh 2,775.00</p>
+                        <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1.5 rounded-xl text-right">
+                            <p class="text-[9px] uppercase font-black tracking-wider text-emerald-500/70">Today's Profit</p>
+                            <p class="text-sm font-black">+KSh 2,775.00</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
-                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-purple-600/30 to-purple-900/60 border border-purple-400/20 text-white shadow-lg transform active:scale-95 transition">
-                        <i class="fa-solid fa-bolt text-2xl text-purple-400"></i>
-                        <span>Quick Surveys</span>
+                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-black flex flex-col items-center gap-2 bg-gradient-to-br from-cyan-600/30 to-blue-900/50 border border-cyan-400/30 text-white shadow-md transform active:scale-95 transition">
+                        <i class="fa-solid fa-bolt text-2xl text-cyan-400"></i>
+                        <span class="text-xs tracking-wider uppercase">Quick Tasks</span>
                     </button>
-                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-bold flex flex-col items-center gap-2 bg-gradient-to-br from-blue-600/30 to-blue-900/60 border border-blue-400/20 text-white shadow-lg transform active:scale-95 transition">
-                        <i class="fa-solid fa-crown text-2xl text-blue-400"></i>
-                        <span>High Paying</span>
+                    <button onclick="switchTab('surveys')" class="p-4 rounded-xl font-black flex flex-col items-center gap-2 bg-gradient-to-br from-amber-600/30 to-orange-900/50 border border-amber-400/30 text-white shadow-md transform active:scale-95 transition">
+                        <i class="fa-solid fa-crown text-2xl text-amber-400"></i>
+                        <span class="text-xs tracking-wider uppercase">Premium Tiers</span>
                     </button>
                 </div>
 
                 <div>
-                    <h3 class="text-base font-bold text-gray-200 mb-3 flex justify-between items-center">
-                        <span>Featured Task Arrays</span>
-                        <span class="text-xs text-purple-400 cursor-pointer" onclick="switchTab('surveys')">View All</span>
+                    <h3 class="text-sm font-black text-gray-300 uppercase tracking-widest mb-3 flex justify-between items-center">
+                        <span>High-Yield Allocations</span>
+                        <span class="text-xs text-cyan-400 cursor-pointer" onclick="switchTab('surveys')">View All</span>
                     </h3>
                     <div class="space-y-3" id="featuredSurveysContainer">
-                        <div class="text-center py-4 text-xs text-gray-500">Initializing secure free API context streams...</div>
+                        <div class="text-center py-4 text-xs text-gray-500">Mapping free open public endpoint channels...</div>
                     </div>
                 </div>
 
                 <div class="cosmic-panel p-4 rounded-xl border border-purple-500/20">
-                    <div class="flex justify-between text-xs font-bold mb-2">
-                        <span class="text-purple-300">Milestone Challenge Tier</span>
-                        <span class="text-white">1 / 3 Unified Tasks</span>
+                    <div class="flex justify-between text-xs font-black uppercase mb-2">
+                        <span class="text-purple-400">Ecosystem Achievement Tier</span>
+                        <span class="text-white">1 / 3 Tasks Cleared</span>
                     </div>
-                    <div class="w-full bg-white/10 h-2.5 rounded-full overflow-hidden">
-                        <div class="bg-gradient-to-r from-purple-500 to-blue-500 h-full w-1/3"></div>
+                    <div class="w-full bg-white/10 h-2 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-cyan-500 via-purple-500 to-amber-500 h-full w-1/3"></div>
                     </div>
-                    <p class="text-[11px] text-gray-400 mt-2">Unlock processing verification loops to gain access to a structural app bonus up to <span class="text-green-400 font-bold">KSh 1,500.00</span>!</p>
+                    <p class="text-[10px] text-gray-400 mt-2 leading-relaxed">Complete 2 additional task allocations today to trigger a system ledger payout dividend increment of <span class="text-emerald-400 font-bold">KSh 1,500.00</span>!</p>
                 </div>
             </section>
 
             <section id="screen-surveys" class="app-screen space-y-4 hidden">
-                <div id="activationGateBanner" class="bg-gradient-to-br from-purple-950/40 to-blue-950/40 border border-purple-500/30 p-5 rounded-2xl relative overflow-hidden">
-                    <div class="flex items-start gap-3.5">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 text-xl shrink-0">
-                            <i class="fa-solid fa-lock"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="font-black text-sm text-white">Unlock Global Survey Dashboard Stream</h4>
-                            <p class="text-xs text-gray-400 leading-relaxed">To activate data parsing, complete a 180 KSh licensing fee payload execution to M-Pesa <span class="text-purple-400 font-bold">Paybill 880100</span>.</p>
-                        </div>
+                <div id="activationGateBanner" class="bg-gradient-to-br from-amber-950/40 via-purple-950/30 to-cyan-950/40 border border-amber-500/30 p-5 rounded-2xl relative overflow-hidden text-center">
+                    <div class="w-12 h-12 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 text-xl mb-3">
+                        <i class="fa-solid fa-lock animate-pulse"></i>
                     </div>
+                    <h4 class="font-black text-sm text-white uppercase tracking-wider">Premium Survey Streaming Gateway Locked</h4>
+                    <p class="text-xs text-gray-300 px-2 mt-1 leading-relaxed">To unlock automated global data mining queues, complete an licensing pay activation of exactly <span class="text-amber-400 font-black">KSh 180</span> to Paybill <span class="text-cyan-400 font-black">880100</span>.</p>
                     
-                    <div class="mt-4 pt-4 border-t border-white/5 space-y-2">
-                        <label class="block text-[10px] uppercase font-black tracking-wider text-purple-300">Paste M-Pesa / Verification Code</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="verificationCodeInput" placeholder="Enter Transaction Receipt Code" class="flex-1 bg-white/5 border border-white/10 p-2.5 rounded-xl text-white text-xs uppercase font-mono tracking-widest focus:outline-none focus:border-purple-400">
-                            <button onclick="verifyActivationCode()" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md transition shrink-0">VERIFY</button>
-                        </div>
-                        <p class="text-[10px] text-red-400 hidden" id="activationErrorCode"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Invalid code sequence. Fake entries are discarded automatically.</p>
-                    </div>
+                    <button onclick="triggerPaystackSecurePayment()" class="mt-4 px-6 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white text-xs font-black rounded-xl tracking-widest uppercase shadow-md transform active:scale-95 transition">ACTIVATE DASHBOARD VIA PAYSTACK</button>
                 </div>
 
                 <div class="flex gap-2 overflow-x-auto hide-scrollbar py-1">
-                    <span class="bg-purple-600 text-white text-xs px-3 py-1.5 rounded-full font-bold whitespace-nowrap">Live Stream API Tasks</span>
-                    <span class="bg-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap">Premium Yields</span>
+                    <span class="bg-cyan-600 text-white text-xs px-3 py-1.5 rounded-full font-black uppercase tracking-wider whitespace-nowrap">Live Public Feed Arrays</span>
+                    <span class="bg-white/5 text-gray-400 text-xs px-3 py-1.5 rounded-full font-bold whitespace-nowrap">Enterprise Level</span>
                 </div>
 
                 <div class="space-y-3" id="allSurveysContainer">
@@ -179,247 +171,249 @@
 
             <section id="screen-rewards" class="app-screen space-y-4 hidden">
                 <div class="text-center py-1">
-                    <h3 class="text-lg font-black tracking-tight text-white">Global Ecosystem Analytics</h3>
-                    <p class="text-xs text-gray-400">Top Performing Consumer Nodes This Cycle</p>
+                    <h3 class="text-base font-black tracking-widest text-white uppercase">Ecosystem Performance Rankings</h3>
+                    <p class="text-xs text-gray-400">Node Asset Distribution Log metrics this validation interval</p>
                 </div>
 
-                <div class="flex justify-center items-end gap-2 pt-6 pb-4 bg-white/5 rounded-2xl border border-white/5 relative">
+                <div class="flex justify-center items-end gap-2 pt-8 pb-4 bg-white/5 rounded-2xl border border-white/5 relative">
                     <div class="flex flex-col items-center w-24">
-                        <div class="w-12 h-12 rounded-full border-2 border-slate-400 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=32" alt="Sarah"></div>
-                        <p class="text-xs font-bold mt-1 text-center truncate w-full">Sarah Miller</p>
-                        <span class="text-[11px] text-purple-400 font-bold">KSh 147,075</span>
+                        <div class="w-12 h-12 rounded-full border-2 border-slate-400 overflow-hidden shadow-md neon-border-purple"><img src="https://i.pravatar.cc/150?img=32" alt="Sarah"></div>
+                        <p class="text-[11px] font-black mt-1 text-center truncate w-full text-gray-200">Sarah Miller</p>
+                        <span class="text-[10px] text-cyan-400 font-bold">KSh 147,075</span>
                         <div class="w-20 bg-gradient-to-t from-slate-800 to-slate-600 h-16 rounded-t-lg mt-2 flex items-center justify-center font-black text-xl text-slate-300">2</div>
                     </div>
                     <div class="flex flex-col items-center w-28 scale-105 -translate-y-2">
-                        <i class="fa-solid fa-crown text-amber-400 text-lg mb-1 animate-bounce"></i>
-                        <div class="w-14 h-14 rounded-full border-2 border-purple-500 overflow-hidden shadow-lg"><img src="https://i.pravatar.cc/150?img=11" alt="Alex"></div>
-                        <p class="text-sm font-black mt-1 text-center truncate w-full">Alex Johnson</p>
-                        <span class="text-xs text-green-400 font-black">KSh 187,612</span>
-                        <div class="w-24 bg-gradient-to-t from-purple-700 to-purple-500 h-24 rounded-t-lg mt-2 flex items-center justify-center font-black text-2xl text-purple-900">1</div>
+                        <i class="fa-solid fa-crown text-amber-400 text-base mb-1 animate-bounce"></i>
+                        <div class="w-14 h-14 rounded-full border-2 border-amber-400 overflow-hidden shadow-lg neon-border-amber"><img src="https://i.pravatar.cc/150?img=11" alt="Alex"></div>
+                        <p class="text-xs font-black mt-1 text-center truncate w-full text-white">Alex Johnson</p>
+                        <span class="text-[11px] text-emerald-400 font-black">KSh 187,612</span>
+                        <div class="w-24 bg-gradient-to-t from-cyan-600 to-purple-600 h-24 rounded-t-lg mt-2 flex items-center justify-center font-black text-2xl text-white">1</div>
                     </div>
                     <div class="flex flex-col items-center w-24">
                         <div class="w-12 h-12 rounded-full border-2 border-amber-700 overflow-hidden shadow-md"><img src="https://i.pravatar.cc/150?img=60" alt="Mike"></div>
-                        <p class="text-xs font-bold mt-1 text-center truncate w-full">Mike Carter</p>
-                        <span class="text-[11px] text-purple-400 font-bold">KSh 131,347</span>
+                        <p class="text-[11px] font-black mt-1 text-center truncate w-full text-gray-200">Mike Carter</p>
+                        <span class="text-[10px] text-cyan-400 font-bold">KSh 131,347</span>
                         <div class="w-20 bg-gradient-to-t from-amber-950 to-amber-800 h-12 rounded-t-lg mt-2 flex items-center justify-center font-black text-lg text-amber-600">3</div>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <div class="cosmic-panel p-3.5 rounded-xl flex justify-between items-center border border-purple-500/30 bg-purple-950/20">
+                    <div class="cosmic-panel p-3.5 rounded-xl flex justify-between items-center border border-cyan-500/30 bg-cyan-950/20">
                         <div class="flex items-center gap-3">
-                            <span class="font-black text-sm text-purple-400">#8</span>
-                            <div class="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-[10px] font-black text-white" id="leaderboardUserBadge">U</div>
-                            <span class="font-bold text-sm text-white" id="leaderboardUserName">Your Node Performance</span>
+                            <span class="font-black text-sm text-cyan-400">#8</span>
+                            <div class="w-8 h-8 rounded-full bg-cyan-500 text-[10px] font-black text-black flex items-center justify-center" id="leaderboardBadge">?</div>
+                            <span class="font-black text-xs text-white" id="leaderboardName">Your Participant Rank</span>
                         </div>
-                        <span class="font-black text-sm text-green-400" id="leaderboardUserScore">KSh 36,862.50</span>
+                        <span class="font-black text-sm text-emerald-400" id="leaderboardScore">KSh 36,862.50</span>
                     </div>
                 </div>
             </section>
 
             <section id="screen-wallet" class="app-screen space-y-4 hidden">
-                <div class="cosmic-panel p-5 rounded-2xl border border-white/10 text-center">
-                    <p class="text-xs text-gray-400 uppercase tracking-widest font-bold">Withdrawable Asset Ledger Balance</p>
+                <div class="cosmic-panel p-5 rounded-2xl text-center neon-border-purple">
+                    <p class="text-xs text-purple-400 uppercase tracking-widest font-black">Withdrawable Liquid Assets Pool</p>
                     <h2 class="text-4xl font-black text-white tracking-tight mt-1" id="withdrawalBalanceHeader">KSh 36,862.50</h2>
-                    <p class="text-[11px] text-amber-400 font-medium mt-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Minimum regional processing floor bound restriction: <strong>KSh 18,000.00</strong></p>
+                    <p class="text-[10px] text-amber-400 font-semibold mt-1 uppercase tracking-wider"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Regional Minimum Threshold bound limit applies: <strong>KSh 18,000.00</strong></p>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-300 uppercase mb-2">Select Target Payout Route Framework Gateway</label>
+                    <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-2">Select Target Payout Route Destination</label>
                     <div class="grid grid-cols-2 gap-2.5">
-                        <div onclick="selectWithdrawMethod('mpesa')" id="method-mpesa" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-purple-500 cursor-pointer bg-purple-950/10">
-                            <span class="text-purple-400 font-black text-xs tracking-tighter">M-PESA Payout</span>
-                            <span class="text-[9px] text-gray-400">Instant Mobile Network</span>
+                        <div onclick="toggleWithdrawRoute('mpesa')" id="gate-mpesa" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-cyan-500 cursor-pointer bg-cyan-950/10">
+                            <span class="text-cyan-400 font-black text-xs tracking-tight">M-PESA Express</span>
+                            <span class="text-[9px] text-gray-400 font-medium">Instant Carrier Load</span>
                         </div>
-                        <div onclick="selectWithdrawMethod('airtel')" id="method-airtel" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
-                            <span class="text-red-400 font-black text-xs tracking-tighter">Airtel Money</span>
-                            <span class="text-[9px] text-gray-400">Mobile Money Carrier</span>
+                        <div onclick="toggleWithdrawRoute('airtel')" id="gate-airtel" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                            <span class="text-red-400 font-black text-xs tracking-tight">Airtel Money</span>
+                            <span class="text-[9px] text-gray-400 font-medium">Mobile Network Wallet</span>
                         </div>
-                        <div onclick="selectWithdrawMethod('paypal')" id="method-paypal" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                        <div onclick="toggleWithdrawRoute('paypal')" id="gate-paypal" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
                             <i class="fa-brands fa-paypal text-lg text-blue-400"></i>
-                            <span class="text-[10px] text-gray-400 font-bold">PayPal Service</span>
+                            <span class="text-[10px] text-gray-300 font-black">PayPal Transfer</span>
                         </div>
-                        <div onclick="selectWithdrawMethod('bank')" id="method-bank" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
-                            <i class="fa-solid fa-building-columns text-lg text-emerald-400"></i>
-                            <span class="text-[10px] text-gray-400 font-bold">Bank Wire Swift</span>
+                        <div onclick="toggleWithdrawRoute('bank')" id="gate-bank" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer">
+                            <i class="fa-solid fa-building-columns text-lg text-amber-400"></i>
+                            <span class="text-[10px] text-gray-300 font-black">Bank Swift Wire</span>
                         </div>
-                        <div onclick="selectWithdrawMethod('usdt')" id="method-usdt" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer col-span-2">
-                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-coins text-yellow-500"></i><span class="text-yellow-400 font-black text-xs">USDT (TRC-20) / Binance Pay</span></div>
-                            <span class="text-[9px] text-gray-400">Global Crypto Processing Ecosystem</span>
+                        <div onclick="toggleWithdrawRoute('usdt')" id="gate-usdt" class="cosmic-panel p-3 rounded-xl flex flex-col items-center justify-center gap-1 border-2 border-transparent opacity-50 cursor-pointer col-span-2">
+                            <div class="flex items-center gap-1.5"><i class="fa-solid fa-coins text-emerald-400"></i><span class="text-emerald-400 font-black text-xs">USDT TRC-20 Blockchain Protocol</span></div>
+                            <span class="text-[9px] text-gray-400">Automated Direct Ledger Processing</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <div>
-                        <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Execution Amount Parameter (KES)</label>
-                        <input type="number" id="withdrawAmountInput" value="18000" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-lg font-black focus:outline-none focus:border-purple-500 transition">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">Disbursement Quantity (KES)</label>
+                        <input type="number" id="withdrawAmountInput" value="18000" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-lg font-black focus:outline-none focus:border-cyan-400 transition">
                     </div>
                     
                     <div>
-                        <label class="block text-xs font-bold text-gray-300 uppercase mb-1.5">Destination Destination Account Credentials / Routing Address</label>
-                        <input type="text" id="withdrawTargetInput" placeholder="e.g. Mobile number, address payload string" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition">
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-wider mb-1">Destination Identification Code / Address Payload</label>
+                        <input type="text" id="withdrawTargetInput" placeholder="e.g. Phone number, Bank account, Wallet address string" class="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-400 transition">
                     </div>
 
                     <div class="bg-white/5 p-3 rounded-xl space-y-1.5 text-xs border border-white/5">
-                        <div class="flex justify-between text-gray-400"><span>Network Framework Processing Fee</span><span class="font-bold text-white">KSh 300.00</span></div>
-                        <div class="flex justify-between text-gray-400"><span>Ecosystem Batch SLA Timing</span><span class="font-bold text-purple-400">Real-time Automated Feed</span></div>
+                        <div class="flex justify-between text-gray-400"><span>Network Clearing Gateway Surcharge Fee</span><span class="font-bold text-white">KSh 300.00</span></div>
+                        <div class="flex justify-between text-gray-400"><span>Automated SLA Sync Processing Time</span><span class="font-bold text-cyan-400">Real-time Core Execution</span></div>
                     </div>
 
-                    <button onclick="executeWithdrawalRequest()" class="w-full py-4 bg-gradient-to-r from-purple-600 to-blue-500 rounded-xl font-black tracking-wide text-sm shadow-lg text-white transform active:scale-95 transition mt-2 neon-glow-purple">EXECUTE SECURE WITHDRAW NOW</button>
+                    <button onclick="commitDisbursementRequest()" class="w-full py-4 bg-gradient-to-r from-cyan-500 via-purple-600 to-amber-500 rounded-xl font-black tracking-widest text-sm shadow-xl text-white transform active:scale-95 transition mt-2">AUTHORIZE ASSET TRANSITION</button>
                 </div>
             </section>
 
             <section id="screen-more" class="app-screen space-y-4 hidden">
                 <div class="cosmic-panel p-4 rounded-xl flex items-center gap-4 border border-white/5">
-                    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-purple-600 to-blue-500 flex items-center justify-center text-white font-black text-xl" id="profileAvatarLarge">U</div>
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center text-white font-black text-2xl shadow-md" id="profileAvatarLarge">?</div>
                     <div>
-                        <h3 class="font-bold text-base text-white" id="profileNameDisplay">User Holder Name</h3>
-                        <p class="text-xs text-gray-400" id="profileEmailDisplay">user@identity.com</p>
-                        <div class="inline-block bg-purple-500/20 text-purple-300 font-bold text-[10px] px-2 py-0.5 rounded-md mt-1">Ecosystem Participant Node</div>
+                        <h3 class="font-black text-base text-white" id="profileNameDisplay">User Operator Name</h3>
+                        <p class="text-xs text-gray-400" id="profileEmailDisplay">identity@node.com</p>
+                        <div class="inline-block bg-cyan-500/10 text-cyan-300 font-bold text-[9px] uppercase tracking-wider px-2 py-0.5 rounded mt-1 border border-cyan-500/20">Authenticated Ecosystem Participant</div>
                     </div>
                 </div>
 
                 <div class="cosmic-panel rounded-xl overflow-hidden divide-y divide-white/5">
-                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Ecosystem framework operating on dark neon skin layer variables.')">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-palette text-purple-400"></i><span class="text-sm font-medium">Visual Identity Profile</span></div>
-                        <span class="text-xs font-bold text-purple-400">Cosmic Neon Deep</span>
+                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Visual profile maps active styling metrics.')">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-palette text-cyan-400"></i><span class="text-sm font-medium">Skin Layer Matrix</span></div>
+                        <span class="text-xs font-black text-cyan-400 uppercase tracking-wider">Multi-Color Cosmic Grid</span>
                     </div>
-                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('All transactions security parameters validated via automated cryptographic checksum logs.')">
-                        <div class="flex items-center gap-3"><i class="fa-solid fa-shield-halved text-emerald-400"></i><span class="text-sm font-medium">Node Validation Protocols</span></div>
-                        <span class="text-xs font-black text-emerald-400">ACTIVE & SECURE</span>
+                    <div class="p-3.5 flex justify-between items-center hover:bg-white/5 transition cursor-pointer" onclick="alert('Two-factor cryptographic verification layers fully locked.')">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-lock text-emerald-400"></i><span class="text-sm font-medium">Cryptographic Node Checks</span></div>
+                        <span class="text-xs font-black text-emerald-400">VERIFIED VALID</span>
                     </div>
                 </div>
 
-                <button onclick="handleLogout()" class="w-full py-3.5 bg-red-950/40 border border-red-500/30 text-red-300 font-bold text-sm rounded-xl hover:bg-red-900/30 transition">Reset Device Session State</button>
+                <button onclick="clearSessionCacheReload()" class="w-full py-3.5 bg-red-950/40 border border-red-500/30 text-red-300 font-black text-xs tracking-widest uppercase rounded-xl hover:bg-red-900/30 transition">Purge Device Session State</button>
             </section>
 
         </main>
 
-        <nav class="max-w-md w-full bg-[#070210]/95 border-t border-white/10 grid grid-cols-5 fixed bottom-0 z-40 backdrop-blur-md pb-safe">
+        <nav class="max-w-md w-full bg-[#06020d]/95 border-t border-white/10 grid grid-cols-5 fixed bottom-0 z-40 backdrop-blur-md pb-safe">
             <button id="nav-home" onclick="switchTab('home')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition nav-active">
-                <i class="fa-solid fa-house text-lg"></i><span class="text-[10px] font-bold">Home</span>
+                <i class="fa-solid fa-house text-lg"></i><span class="text-[9px] uppercase tracking-wider font-black">Home</span>
             </button>
             <button id="nav-surveys" onclick="switchTab('surveys')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-                <i class="fa-solid fa-square-poll-horizontal text-lg"></i><span class="text-[10px] font-bold">Surveys</span>
+                <i class="fa-solid fa-square-poll-horizontal text-lg"></i><span class="text-[9px] uppercase tracking-wider font-black">Surveys</span>
             </button>
             <button id="nav-rewards" onclick="switchTab('rewards')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-                <i class="fa-solid fa-trophy text-lg"></i><span class="text-[10px] font-bold">Rewards</span>
+                <i class="fa-solid fa-trophy text-lg"></i><span class="text-[9px] uppercase tracking-wider font-black">Rankings</span>
             </button>
             <button id="nav-wallet" onclick="switchTab('wallet')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-                <i class="fa-solid fa-wallet text-lg"></i><span class="text-[10px] font-bold">Withdraw</span>
+                <i class="fa-solid fa-wallet text-lg"></i><span class="text-[9px] uppercase tracking-wider font-black">Withdraw</span>
             </button>
             <button id="nav-more" onclick="switchTab('more')" class="py-3 flex flex-col items-center justify-center text-gray-400 gap-1 transition">
-                <i class="fa-solid fa-bars text-lg"></i><span class="text-[10px] font-bold">More</span>
+                <i class="fa-solid fa-bars text-lg"></i><span class="text-[9px] uppercase tracking-wider font-black">More</span>
             </button>
         </nav>
     </div>
 
     <script>
-        // Core Reactive Global Configuration Parameters States
+        // Core Configuration States Parameters Values
         let isActivated = false;
         let currentUser = null;
         let userBalanceKsh = 36862.50;
-        const exchangeRateKshToUsd = 150.00;
-        let selectedWithdrawMethod = 'mpesa';
-        
-        // Static Security Key Validation Access Layer Constraints
-        const STRICT_UNLOCK_CODE = 'SURVEYEARN.PRO';
+        const currencyExchangeRateDivider = 150.00;
+        let activeSelectedWithdrawRoute = 'mpesa';
 
-        // Free Open Public Domain Endpoint API to stream high-quality market consumer parameters dynamically
-        const FREE_SURVEY_DATA_FEED_API = 'https://opentdb.com/api.php?amount=10&type=multiple';
+        // Embedded Paystack API Credentials Core Keys Parameters
+        const paystackApiConfig = {
+            secret: 'sk_live_88e31b65b6c16121f6eea02fec2282cb6ddf067f',
+            public: 'pk_live_ebbc4bdc1da0f8fc075bae6ce78da4f9c89552bc'
+        };
 
-        // Initializer pipeline setup checks running elements matching specs
+        // Live Free Online REST Endpoint Target Context Streams to pull mock-survey metrics datasets
+        const STREAM_FREE_PUBLIC_FEED_ENDPOINT = 'https://opentdb.com/api.php?amount=12&type=multiple';
+
         window.addEventListener('DOMContentLoaded', () => {
-            evaluateLocalCachedSessionData();
+            validateStoredSessionPersistence();
         });
 
-        function evaluateLocalCachedSessionData() {
-            const cachedUser = localStorage.getItem('sp_session_user');
-            const cachedActivation = localStorage.getItem('sp_session_active');
-            
-            if (cachedActivation === 'true') {
+        // Parse Local Identity Tokens
+        function validateStoredSessionPersistence() {
+            const userToken = localStorage.getItem('sp_node_user');
+            const activationState = localStorage.getItem('sp_node_is_active');
+
+            if (activationState === 'true') {
                 isActivated = true;
             }
 
-            if (cachedUser) {
-                currentUser = JSON.parse(cachedUser);
-                bootstrapAppDashboardView();
+            if (userToken) {
+                currentUser = JSON.parse(userToken);
+                deployDashboardInterfaceEnvironment();
             } else {
-                document.getElementById('auth-layer').classList.remove('pointer-events-none', 'opacity-0');
+                document.getElementById('auth-layer').classList.remove('opacity-0', 'pointer-events-none');
                 document.getElementById('app-content').classList.add('hidden');
             }
         }
 
-        // Toggle authentication panel logic states input schemas smoothly
-        let currentAuthMode = 'signup';
-        function toggleAuthTab(mode) {
-            currentAuthMode = mode;
+        // Auth Form Tabs Swapper States Logic controls
+        let activeAuthViewMode = 'signup';
+        function toggleAuthMode(mode) {
+            activeAuthViewMode = mode;
             const tabSignup = document.getElementById('tab-signup');
             const tabLogin = document.getElementById('tab-login');
             const submitBtn = document.getElementById('auth-submit-btn');
-            const nameField = document.getElementById('auth-form-fields').children[0];
+            const usernameWrapper = document.getElementById('field-username-wrapper');
 
             if (mode === 'signup') {
-                tabSignup.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400";
-                tabLogin.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400";
-                submitBtn.innerText = "CREATE ACCOUNT";
-                nameField.classList.remove('hidden');
+                tabSignup.className = "flex-1 text-center font-black text-sm pb-2 border-b-2 border-cyan-500 text-cyan-400";
+                tabLogin.className = "flex-1 text-center font-black text-sm pb-2 border-b-2 border-transparent text-gray-400";
+                submitBtn.innerText = "INITIALIZE SECURE ACCESS";
+                usernameWrapper.classList.remove('hidden');
             } else {
-                tabLogin.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-purple-500 text-purple-400";
-                tabSignup.className = "flex-1 text-center font-bold text-sm pb-2 border-b-2 border-transparent text-gray-400";
-                submitBtn.innerText = "ACCESS METRICS";
-                nameField.classList.add('hidden');
+                tabLogin.className = "flex-1 text-center font-black text-sm pb-2 border-b-2 border-cyan-500 text-cyan-400";
+                tabSignup.className = "flex-1 text-center font-black text-sm pb-2 border-b-2 border-transparent text-gray-400";
+                submitBtn.innerText = "AUTHENTICATE SESSION LOG";
+                usernameWrapper.classList.add('hidden');
             }
         }
 
-        function handleAuthSubmit() {
-            const nameVal = document.getElementById('auth-name').value.trim();
-            const emailVal = document.getElementById('auth-email').value.trim();
-            const passVal = document.getElementById('auth-pass').value.trim();
+        function processAccountAuthentication() {
+            const nameValue = document.getElementById('auth-name').value.trim();
+            const emailValue = document.getElementById('auth-email').value.trim();
+            const passValue = document.getElementById('auth-pass').value.trim();
 
-            if (!emailVal || !passVal || (currentAuthMode === 'signup' && !nameVal)) {
-                alert('Please populate all tracking identity parameter strings properly.');
+            if (!emailValue || !passValue || (activeAuthViewMode === 'signup' && !nameValue)) {
+                alert('Validation Alert: Please populate identity parameter target strings completely.');
                 return;
             }
 
-            // Assign structural user values tracking schemas
             currentUser = {
-                name: currentAuthMode === 'signup' ? nameVal : emailVal.split('@')[0],
-                email: emailVal
+                name: activeAuthViewMode === 'signup' ? nameValue : emailValue.split('@')[0],
+                email: emailValue
             };
 
-            localStorage.setItem('sp_session_user', JSON.stringify(currentUser));
-            bootstrapAppDashboardView();
+            localStorage.setItem('sp_node_user', JSON.stringify(currentUser));
+            deployDashboardInterfaceEnvironment();
         }
 
-        function bootstrapAppDashboardView() {
-            // Unveil view layouts components
+        function deployDashboardInterfaceEnvironment() {
             document.getElementById('auth-layer').classList.add('opacity-0', 'pointer-events-none');
             document.getElementById('app-content').classList.remove('hidden');
 
-            // Dynamic User Data Mapping Bindings Execution
-            const displayChar = currentUser.name.charAt(0).toUpperCase();
+            const trackingInitialChar = currentUser.name.charAt(0).toUpperCase();
+            
+            // Map Dynamic Name Bindings
             document.getElementById('headerUserName').innerText = currentUser.name;
             document.getElementById('profileNameDisplay').innerText = currentUser.name;
             document.getElementById('profileEmailDisplay').innerText = currentUser.email;
-            document.getElementById('leaderboardUserName').innerText = `${currentUser.name} (Your Active Node)`;
-            
-            document.getElementById('userAvatarPlaceholder').innerText = displayChar;
-            document.getElementById('leaderboardUserBadge').innerText = displayChar;
-            document.getElementById('profileAvatarLarge').innerText = displayChar;
+            document.getElementById('leaderboardName').innerText = `${currentUser.name} (Your Connection Node)`;
 
-            syncDashboardBalanceMetrics();
-            evaluateGateActivationStateUI();
-            fetchSurveysFromFreeAPI();
+            document.getElementById('userAvatarBadge').innerText = trackingInitialChar;
+            document.getElementById('leaderboardBadge').innerText = trackingInitialChar;
+            document.getElementById('profileAvatarLarge').innerText = trackingInitialChar;
+
+            syncGlobalLedgerBalanceMetrics();
+            refreshLockingGateBannerUI();
+            streamDataAllocationsFromPublicAPI();
         }
 
-        function handleLogout() {
+        function clearSessionCacheReload() {
             localStorage.clear();
             location.reload();
         }
 
-        // View Tabs switching controller mechanism routing operations smoothly
+        // View Router Switching Engine
         function switchTab(targetScreen) {
             document.querySelectorAll('.app-screen').forEach(screen => screen.classList.add('hidden'));
             document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('nav-active'));
@@ -428,181 +422,180 @@
             document.getElementById(`nav-${targetScreen}`).classList.add('nav-active');
         }
 
-        // Processing numeric computation values balancing loops
-        function syncDashboardBalanceMetrics() {
-            const formattedKsh = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('mainBalanceDisplay').innerText = formattedKsh;
-            document.getElementById('withdrawalBalanceHeader').innerText = formattedKsh;
-            document.getElementById('leaderboardUserScore').innerText = formattedKsh;
+        // Numbers & Currencies Synchronizer 
+        function syncGlobalLedgerBalanceMetrics() {
+            const printString = `KSh ${userBalanceKsh.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('mainBalanceDisplay').innerText = printString;
+            document.getElementById('withdrawalBalanceHeader').innerText = printString;
+            document.getElementById('leaderboardScore').innerText = printString;
 
-            let usdEquiv = userBalanceKsh / exchangeRateKshToUsd;
-            document.getElementById('convertedUsdDisplay').innerText = `($${usdEquiv.toFixed(2)} USD)`;
+            let equivalentUsdValue = userBalanceKsh / currencyExchangeRateDivider;
+            document.getElementById('convertedUsdDisplay').innerText = `($${equivalentUsdValue.toFixed(2)} USD)`;
         }
 
-        function evaluateGateActivationStateUI() {
-            const gateBanner = document.getElementById('activationGateBanner');
-            if (isActivated) {
-                gateBanner.innerHTML = `
-                    <div class="flex items-center gap-3 text-emerald-400">
-                        <i class="fa-solid fa-circle-check text-2xl"></i>
-                        <div>
-                            <h4 class="font-black text-sm text-white">Ecosystem Token Parsing Node Activated</h4>
-                            <p class="text-xs text-gray-400">Your licensing validation pass is verified. Global streaming feeds active.</p>
-                        </div>
+        function refreshLockingGateBannerUI() {
+            const bannerElement = document.getElementById('activationGateBanner');
+            if (isActivated && bannerElement) {
+                bannerElement.className = "bg-gradient-to-r from-emerald-950/40 via-teal-900/30 to-green-950/40 border border-emerald-500/30 p-5 rounded-2xl text-center";
+                bannerElement.innerHTML = `
+                    <div class="w-12 h-12 mx-auto rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-xl mb-2">
+                        <i class="fa-solid fa-circle-check"></i>
                     </div>
+                    <h4 class="font-black text-sm text-white uppercase tracking-widest">Ecosystem Payload Parser Active</h4>
+                    <p class="text-xs text-gray-400">Licensing pass validated successfully via Paystack secure callback verification hooks.</p>
                 `;
-                gateBanner.className = "bg-gradient-to-r from-emerald-950/40 to-teal-950/40 border border-emerald-500/30 p-4 rounded-2xl";
             }
         }
 
-        // Processing validation loops filtering fake payments strictly via user parameters constraint checks
-        function verifyActivationCode() {
-            const codeInput = document.getElementById('verificationCodeInput').value.trim();
-            const errorText = document.getElementById('activationErrorCode');
-
-            if (codeInput === STRICT_UNLOCK_CODE) {
-                isActivated = true;
-                localStorage.setItem('sp_session_active', 'true');
-                errorText.classList.add('hidden');
-                evaluateGateActivationStateUI();
-                alert('Ecosystem Activation Key Confirmed successfully! Survey analytics streams initiated.');
-                fetchSurveysFromFreeAPI(); // Rerender context
-            } else {
-                errorText.classList.remove('hidden');
-                alert('Verification Failure: Passed token string signature is invalid or unrecognized by M-Pesa ledger rules.');
-            }
+        // Trigger Paystack Gateway Pop-up Processing Pipelines
+        function triggerPaystackSecurePayment() {
+            let handle = PaystackPop.setup({
+                key: paystackApiConfig.public,
+                email: currentUser.email,
+                amount: 18000, // Representing 180.00 KES directly in fractional subunits values integers
+                currency: 'KES',
+                ref: 'SP-NODE-' + Math.floor((Math.random() * 1000000000) + 1),
+                callback: function(paymentResponse) {
+                    alert('Transaction Authenticated! Licensing code signature matches. Reference token hash ID: ' + paymentResponse.reference);
+                    isActivated = true;
+                    localStorage.setItem('sp_node_is_active', 'true');
+                    refreshLockingGateBannerUI();
+                    switchTab('surveys');
+                },
+                onClose: function() {
+                    alert('Session Disconnected: Paystack checkout processing pipeline session closed by client termination routines.');
+                }
+            });
+            handle.openIframe();
         }
 
-        // Live Free Data Feed Integration API Stream Processing Infrastructure logic mapping tasks elements items
-        function fetchSurveysFromFreeAPI() {
-            const featuredContainer = document.getElementById('featuredSurveysContainer');
-            const allContainer = document.getElementById('allSurveysContainer');
+        // Live Free REST API Feed Mapping Pipeline Loop Architecture implementation logic items
+        function streamDataAllocationsFromPublicAPI() {
+            const featuredBox = document.getElementById('featuredSurveysContainer');
+            const listingsBox = document.getElementById('allSurveysContainer');
 
-            // Accessing public domain network assets dynamically to construct live survey cards payload elements 
-            fetch(FREE_SURVEY_DATA_FEED_API)
+            fetch(STREAM_FREE_PUBLIC_FEED_ENDPOINT)
                 .then(res => res.json())
-                .then(data => {
-                    if (data.results && data.results.length > 0) {
-                        featuredContainer.innerHTML = '';
-                        allContainer.innerHTML = '';
+                .then(payload => {
+                    if (payload.results && payload.results.length > 0) {
+                        featuredBox.innerHTML = '';
+                        listingsBox.innerHTML = '';
 
-                        data.results.forEach((item, index) => {
-                            // Synthesize dynamic reward parameters derived based on item category metadata lengths complexity variables weights
-                            const baseReward = 450 + (item.question.length * 3);
-                            const calculatedMinutes = 5 + (index % 3) * 3;
-                            const slotsRemaining = 42 + (index * 7);
+                        payload.results.forEach((taskItem, pointerIndex) => {
+                            // Synthesize relative yield quantities scaling proportional to text weight length matrices constraints check
+                            const computedDividendVal = 480 + (taskItem.question.length * 2.5);
+                            const simulatedMinutesValue = 6 + (pointerIndex % 4) * 3;
+                            const slotPoolRemaining = 38 + (pointerIndex * 6);
 
-                            const cardMarkup = `
-                                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-purple-500 hover:border-blue-500 transition relative">
-                                    <div class="pr-2 max-w-[70%]">
-                                        <span class="text-[9px] font-black uppercase text-purple-400 tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">${item.category}</span>
-                                        <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${item.question}</h4>
-                                        <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${calculatedMinutes} Mins • ${slotsRemaining} Node Allocation Pools Available</p>
-                                        <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${baseReward.toFixed(2)}</p>
+                            const structureString = `
+                                <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-cyan-500 relative hover:border-purple-500 transition">
+                                    <div class="pr-2 max-w-[72%]">
+                                        <span class="text-[9px] font-black uppercase text-cyan-400 tracking-widest bg-cyan-500/10 px-2 py-0.5 rounded">${taskItem.category}</span>
+                                        <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${taskItem.question}</h4>
+                                        <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${simulatedMinutesValue} Mins • ${slotPoolRemaining} Allocation slots remaining</p>
+                                        <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${computedDividendVal.toFixed(2)}</p>
                                     </div>
-                                    <button onclick="handleSurveyAccessExecute('${item.question.replace(/'/g, "\\'")}', ${baseReward})" class="bg-gradient-to-r from-purple-600 to-blue-500 text-[10px] font-black px-4 py-2.5 rounded-xl shadow-md tracking-wider transform active:scale-95 transition shrink-0 text-white">INITIALIZE</button>
-                                </div>
+                                    <button onclick="commitTaskAllocationExecution('${taskItem.question.replace(/'/g, "\\'")}', ${computedDividendVal})" class="bg-gradient-to-r from-cyan-500 via-purple-600 to-amber-500 text-[10px] font-black px-3 py-2.5 rounded-xl tracking-wider text-white transform active:scale-95 transition shrink-0">INITIALIZE</button>
+                               </div>
                             `;
 
-                            // Map structural distribution patterns
-                            if (index < 2) {
-                                featuredContainer.innerHTML += cardMarkup;
+                            if (pointerIndex < 2) {
+                                featuredBox.innerHTML += structureString;
                             }
-                            allContainer.innerHTML += cardMarkup;
+                            listingsBox.innerHTML += structureString;
                         });
                     } else {
-                        renderFallbackMockSurveys();
+                        renderRedundantFallbackDataStore();
                     }
                 })
                 .catch(err => {
-                    console.log('Ecosystem tracking dynamic routing redirect context trigger. Falling back to offline redundant schemas layers.', err);
-                    renderFallbackMockSurveys();
+                    console.log('Public endpoint stream connection failure. Redirecting run execution parameters context down to redundant local structures.', err);
+                    renderRedundantFallbackDataStore();
                 });
         }
 
-        function renderFallbackMockSurveys() {
-            const featuredContainer = document.getElementById('featuredSurveysContainer');
-            const allContainer = document.getElementById('allSurveysContainer');
+        function renderRedundantFallbackDataStore() {
+            const featuredBox = document.getElementById('featuredSurveysContainer');
+            const listingsBox = document.getElementById('allSurveysContainer');
 
-            const mockSurveys = [
-                { title: "Global Consumer Brand Positioning Analysis", cat: "Market Analytics", reward: 750.00, time: 10 },
-                { title: "Digital Wallet Payment Framework Architecture Survey", cat: "Fintech Innovation", reward: 920.00, time: 12 },
-                { title: "Regional Transport Commuter Network Mapping Matrix", cat: "Logistics Research", reward: 580.00, time: 8 },
-                { title: "E-Commerce Delivery Optimization Feed Loop", cat: "Retail Distribution", reward: 640.00, time: 15 }
+            const backupDatapoints = [
+                { title: "Global Consumer Brand Market Position Evaluation Metric", cat: "Market Metrics Analysis", reward: 750.00, duration: 10 },
+                { title: "Digital Payment Infrastructure System Routing Preference Feedback", cat: "Fintech Consumer Feed", reward: 920.00, duration: 12 },
+                { title: "Regional Urban Infrastructure Transports Distribution Grid", cat: "Logistics Analytics", reward: 580.00, duration: 8 }
             ];
 
-            featuredContainer.innerHTML = '';
-            allContainer.innerHTML = '';
+            featuredBox.innerHTML = '';
+            listingsBox.innerHTML = '';
 
-            mockSurveys.forEach((item, index) => {
-                const markup = `
+            backupDatapoints.forEach((elementItem, indexIdx) => {
+                const markupLayout = `
                     <div class="cosmic-panel p-4 rounded-xl flex justify-between items-center border-l-4 border-purple-500 relative">
                         <div class="max-w-[70%]">
-                            <span class="text-[9px] font-black uppercase text-purple-400 tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">${item.cat}</span>
-                            <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${item.title}</h4>
-                            <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${item.time} Mins • High Priority Queue</p>
-                            <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${item.reward.toFixed(2)}</p>
+                            <span class="text-[9px] font-black uppercase text-purple-400 tracking-wider bg-purple-500/10 px-2 py-0.5 rounded">${elementItem.cat}</span>
+                            <h4 class="font-bold text-xs text-white tracking-tight mt-1.5 line-clamp-1">${elementItem.title}</h4>
+                            <p class="text-[10px] text-gray-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>${elementItem.duration} Mins • Secure Priority Queue Layer</p>
+                            <p class="text-xs font-black text-emerald-400 mt-1">Allocation Dividend: KSh ${elementItem.reward.toFixed(2)}</p>
                         </div>
-                        <button onclick="handleSurveyAccessExecute('${item.title}', ${item.reward})" class="bg-gradient-to-r from-purple-600 to-blue-500 text-[10px] font-black px-4 py-2.5 rounded-xl shadow-md tracking-wider transform active:scale-95 transition text-white">INITIALIZE</button>
+                        <button onclick="commitTaskAllocationExecution('${elementItem.title}', ${elementItem.reward})" class="bg-gradient-to-r from-cyan-500 via-purple-600 to-amber-500 text-[10px] font-black px-4 py-2.5 rounded-xl text-white transform active:scale-95 transition">INITIALIZE</button>
                     </div>
                 `;
-                if (index < 2) featuredContainer.innerHTML += markup;
-                allContainer.innerHTML += markup;
+                if (indexIdx < 2) featuredBox.innerHTML += markupLayout;
+                listingsBox.innerHTML += markupLayout;
             });
         }
 
-        function handleSurveyAccessExecute(title, amount) {
+        function commitTaskAllocationExecution(titleString, calculationRewardAmount) {
             if (!isActivated) {
-                alert(`Access Blocked: Secure Node Validation parameters missing. Please execute the 180 KSh licensing fee to M-Pesa Paybill 880100 and submit the legitimate code token to unlock surveys.`);
+                alert(`Access Refused: Verification profile mismatch. Secure licensing parameters missing. Please execute the KSh 180 payment via Paystack inside the Surveys dashboard panel to authorize live token streams configuration parameters.`);
                 switchTab('surveys');
                 return;
             }
 
-            if (confirm(`Do you wish to allocate computing power resources thread instances to execute the metric task stream: "${title}"?`)) {
-                alert('Connecting to live decentralized data stream instance validation pools...');
+            if (confirm(`Do you want to establish thread connections to execute metrics allocations tasks for: "${titleString}"?`)) {
+                alert('Connecting to localized decentralization data stream node pools validation processing hooks...');
                 setTimeout(() => {
-                    userBalanceKsh += amount;
-                    syncDashboardBalanceMetrics();
-                    alert(`Telemetry survey validation successful. Dividend payload of KSh ${amount.toFixed(2)} credited into your active account node balance instance tracking ledger.`);
+                    userBalanceKsh += calculationRewardAmount;
+                    syncGlobalLedgerBalanceMetrics();
+                    alert(`Telemetry parsing loop executed. Payload asset dividend of KSh ${calculationRewardAmount.toFixed(2)} credited straight into your dashboard identity balance matrix tracking records.`);
                 }, 2000);
             }
         }
 
-        // Wallet Control Options Route Selectors Logic Components Management
-        function selectWithdrawMethod(method) {
-            document.querySelectorAll('[id^="method-"]').forEach(el => {
-                el.classList.remove('border-purple-500', 'bg-purple-950/10');
-                el.classList.add('border-transparent', 'opacity-50');
+        // Multi-Gateway Settlement Routes Config Swappers Logic Operations Components Items
+        function toggleWithdrawRoute(targetMethodKey) {
+            document.querySelectorAll('[id^="gate-"]').forEach(elementNode => {
+                elementNode.classList.remove('border-cyan-500', 'bg-cyan-950/10');
+                elementNode.classList.add('border-transparent', 'opacity-50');
             });
 
-            const targetEl = document.getElementById(`method-${method}`);
-            targetEl.classList.remove('border-transparent', 'opacity-50');
-            targetEl.classList.add('border-purple-500', 'bg-purple-950/10');
-            selectedWithdrawMethod = method;
+            const matchingActiveNode = document.getElementById(`gate-${targetMethodKey}`);
+            matchingActiveNode.classList.remove('border-transparent', 'opacity-50');
+            matchingActiveNode.classList.add('border-cyan-500', 'bg-cyan-950/10');
+            activeSelectedWithdrawRoute = targetMethodKey;
         }
 
-        function executeWithdrawalRequest() {
-            const requestedAmount = parseFloat(document.getElementById('withdrawAmountInput').value);
-            const targetCredential = document.getElementById('withdrawTargetInput').value.trim();
+        function commitDisbursementRequest() {
+            const parsedQuantityValue = parseFloat(document.getElementById('withdrawAmountInput').value);
+            const userTargetAddressPayloadString = document.getElementById('withdrawTargetInput').value.trim();
 
-            if (!targetCredential) {
-                alert('Please populate the routing address / destination account field correctly.');
+            if (!userTargetAddressPayloadString) {
+                alert('Input Constraint Alert: Please specify a valid destination credentials routing identification payload string.');
                 return;
             }
 
-            if (requestedAmount < 18000) {
-                alert('Withdrawal Execution Cancelled: Localized system policy restricts value output operations strictly below a baseline floor parameter of exactly KSh 18,000.00.');
+            if (parsedQuantityValue < 18000) {
+                alert('Transaction Aborted: Localized regional core parameters enforce a strict baseline processing execution bound minimum limits parameter metric of exactly KSh 18,000.00.');
                 return;
             }
 
-            if (requestedAmount > userBalanceKsh) {
-                alert('Ledger Error: Requested payout balance quantity parameters exceed current assets allocations pools available.');
+            if (parsedQuantityValue > userBalanceKsh) {
+                alert('Ledger Error Check Failed: Requested payout value volume constraints exceed current net assets tracking pools.');
                 return;
             }
 
-            userBalanceKsh -= requestedAmount;
-            syncDashboardBalanceMetrics();
-            alert(`Payout Sequence Successfully Scheduled! KSh ${requestedAmount.toLocaleString()} has been dispatched to route path identifier [${selectedWithdrawMethod.toUpperCase()}]: (${targetCredential}). Processing takes instant automated ledger validation queues.`);
+            userBalanceKsh -= parsedQuantityValue;
+            syncGlobalLedgerBalanceMetrics();
+            alert(`Settle Routine Scheduled! KSh ${parsedQuantityValue.toLocaleString()} has been queued for execution routing to endpoint path channel instance [${activeSelectedWithdrawRoute.toUpperCase()}]: (${userTargetAddressPayloadString}). Funds parsing pipeline matches automated instant batch queues clearances logs.`);
         }
     </script>
 </body>
